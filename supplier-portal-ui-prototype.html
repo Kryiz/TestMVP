@@ -1,0 +1,1128 @@
+<div id="supplier-ui-prototype">
+  <style>
+    #supplier-ui-prototype {
+      --sp-bg: light-dark(#eef3f8, #0b1118);
+      --sp-surface: light-dark(#ffffff, #151c25);
+      --sp-surface-2: light-dark(#f7f9fc, #1b2430);
+      --sp-ink: light-dark(#16202f, #edf3fa);
+      --sp-muted: light-dark(#637083, #a9b5c4);
+      --sp-line: light-dark(#dce3eb, #2b3644);
+      --sp-accent: light-dark(#1459d9, #66a2ff);
+      --sp-accent-soft: light-dark(#eaf1ff, #132a4d);
+      --sp-success: light-dark(#137a52, #59d7a7);
+      --sp-success-soft: light-dark(#e7f7f0, #12392d);
+      --sp-warn: light-dark(#b25b00, #ffb867);
+      --sp-warn-soft: light-dark(#fff2df, #3c2915);
+      --sp-danger: light-dark(#b42318, #ff8b82);
+      --sp-danger-soft: light-dark(#fff0ee, #421f22);
+      --sp-shadow: 0 18px 50px light-dark(rgba(24, 39, 75, .13), rgba(0, 0, 0, .32));
+      color: var(--sp-ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color-scheme: light dark;
+    }
+    #supplier-ui-prototype * { box-sizing: border-box; }
+    #supplier-ui-prototype .is-hidden { display: none !important; }
+    #supplier-ui-prototype button,
+    #supplier-ui-prototype input,
+    #supplier-ui-prototype select,
+    #supplier-ui-prototype textarea { font: inherit; }
+    #supplier-ui-prototype button { color: inherit; }
+    #supplier-ui-prototype .sp-app {
+      position: relative;
+      overflow: hidden;
+      min-height: 920px;
+      background: var(--sp-bg);
+      border: 1px solid var(--sp-line);
+      border-radius: 22px;
+      box-shadow: var(--sp-shadow);
+    }
+    #supplier-ui-prototype .sp-topbar {
+      display: grid;
+      grid-template-columns: minmax(190px, .8fr) minmax(410px, 1.5fr) auto;
+      gap: 18px;
+      align-items: center;
+      min-height: 76px;
+      padding: 12px 20px;
+      background: var(--sp-surface);
+      border-bottom: 1px solid var(--sp-line);
+    }
+    #supplier-ui-prototype .sp-brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
+    #supplier-ui-prototype .sp-logo {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--sp-accent);
+      color: light-dark(#fff, #08101b);
+      font-weight: 500;
+      letter-spacing: -.03em;
+    }
+    #supplier-ui-prototype .sp-brand-copy { min-width: 0; }
+    #supplier-ui-prototype .sp-brand-title { font-size: 15px; font-weight: 500; white-space: nowrap; }
+    #supplier-ui-prototype .sp-brand-sub { margin-top: 2px; color: var(--sp-muted); font-size: 12px; white-space: nowrap; }
+    #supplier-ui-prototype .sp-role-switcher {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      padding: 5px;
+      background: var(--sp-surface-2);
+      border: 1px solid var(--sp-line);
+      border-radius: 13px;
+    }
+    #supplier-ui-prototype .sp-role-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 38px;
+      padding: 7px 10px;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--sp-muted);
+      font-size: 13px;
+    }
+    #supplier-ui-prototype .sp-role-button[aria-pressed="true"] {
+      background: var(--sp-surface);
+      color: var(--sp-ink);
+      box-shadow: 0 3px 10px light-dark(rgba(26, 49, 84, .10), rgba(0, 0, 0, .22));
+    }
+    #supplier-ui-prototype .sp-role-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sp-accent); }
+    #supplier-ui-prototype .sp-role-button[data-role="supplier"] .sp-role-dot { background: var(--sp-success); }
+    #supplier-ui-prototype .sp-role-button[data-role="receiver"] .sp-role-dot { background: var(--sp-warn); }
+    #supplier-ui-prototype .sp-top-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+    #supplier-ui-prototype .sp-icon-button {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--sp-line);
+      border-radius: 11px;
+      background: var(--sp-surface);
+    }
+    #supplier-ui-prototype .sp-icon-button svg { width: 18px; height: 18px; }
+    #supplier-ui-prototype .sp-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      display: grid;
+      place-items: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 4px;
+      border: 2px solid var(--sp-surface);
+      border-radius: 10px;
+      background: var(--sp-danger);
+      color: #fff;
+      font-size: 10px;
+    }
+    #supplier-ui-prototype .sp-avatar {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--sp-accent-soft);
+      color: var(--sp-accent);
+      font-size: 13px;
+      font-weight: 500;
+    }
+    #supplier-ui-prototype .sp-drawer {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      padding: 14px 22px;
+      background: var(--sp-surface);
+      border-bottom: 1px solid var(--sp-line);
+    }
+    #supplier-ui-prototype .sp-drawer[hidden] { display: none; }
+    #supplier-ui-prototype .sp-drawer-item {
+      padding: 11px 12px;
+      border-radius: 10px;
+      background: var(--sp-surface-2);
+      color: var(--sp-muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    #supplier-ui-prototype .sp-drawer-item strong { display: block; margin-bottom: 3px; color: var(--sp-ink); font-weight: 500; }
+    #supplier-ui-prototype .sp-layout { display: grid; grid-template-columns: 218px minmax(0, 1fr); }
+    #supplier-ui-prototype .sp-sidebar {
+      padding: 18px 12px;
+      background: var(--sp-surface);
+      border-right: 1px solid var(--sp-line);
+    }
+    #supplier-ui-prototype .sp-account {
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      background: var(--sp-surface-2);
+    }
+    #supplier-ui-prototype .sp-account-name { font-size: 13px; font-weight: 500; }
+    #supplier-ui-prototype .sp-account-org { margin-top: 3px; color: var(--sp-muted); font-size: 12px; line-height: 1.35; }
+    #supplier-ui-prototype .sp-nav-label {
+      margin: 16px 10px 8px;
+      color: var(--sp-muted);
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    #supplier-ui-prototype .sp-nav { display: grid; gap: 4px; }
+    #supplier-ui-prototype .sp-nav-button {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 42px;
+      padding: 9px 10px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--sp-muted);
+      text-align: left;
+      font-size: 13px;
+    }
+    #supplier-ui-prototype .sp-nav-button svg { width: 17px; height: 17px; }
+    #supplier-ui-prototype .sp-nav-button[aria-current="page"] { background: var(--sp-accent-soft); color: var(--sp-accent); }
+    #supplier-ui-prototype .sp-nav-badge {
+      margin-left: auto;
+      padding: 2px 7px;
+      border-radius: 10px;
+      background: var(--sp-warn-soft);
+      color: var(--sp-warn);
+      font-size: 11px;
+    }
+    #supplier-ui-prototype .sp-main { min-width: 0; padding: 22px; }
+    #supplier-ui-prototype .sp-heading-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 16px; }
+    #supplier-ui-prototype .sp-heading-actions { display: flex; align-items: flex-start; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+    #supplier-ui-prototype .sp-back-row { display: flex; margin: -6px 0 14px; }
+    #supplier-ui-prototype .sp-eyebrow { color: var(--sp-accent); font-size: 12px; font-weight: 500; }
+    #supplier-ui-prototype h2 { margin: 4px 0 5px; font-size: 24px; line-height: 1.2; font-weight: 500; letter-spacing: -.02em; }
+    #supplier-ui-prototype .sp-lead { margin: 0; color: var(--sp-muted); font-size: 13px; line-height: 1.5; }
+    #supplier-ui-prototype .sp-scenario-chip {
+      flex: none;
+      padding: 9px 11px;
+      border: 1px solid var(--sp-line);
+      border-radius: 11px;
+      background: var(--sp-surface);
+      color: var(--sp-muted);
+      font-size: 12px;
+    }
+    #supplier-ui-prototype .sp-scenario-chip strong { display: block; margin-top: 2px; color: var(--sp-ink); font-weight: 500; }
+    #supplier-ui-prototype .sp-source-choice { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
+    #supplier-ui-prototype .sp-source-option { display: flex; align-items: center; gap: 10px; min-height: 62px; padding: 12px; border: 1px solid var(--sp-line); border-radius: 11px; background: var(--sp-surface-2); color: var(--sp-ink); text-align: left; }
+    #supplier-ui-prototype .sp-source-option svg { flex: 0 0 auto; color: var(--sp-accent); }
+    #supplier-ui-prototype .sp-source-option strong { display: block; font-size: 12px; font-weight: 500; }
+    #supplier-ui-prototype .sp-source-option span { display: block; margin-top: 3px; color: var(--sp-muted); font-size: 11px; }
+    #supplier-ui-prototype .sp-source-option[aria-pressed="true"] { border-color: var(--sp-accent); background: var(--sp-accent-soft); }
+    #supplier-ui-prototype .sp-progress-wrap {
+      margin-bottom: 18px;
+      padding: 14px;
+      overflow-x: auto;
+      background: var(--sp-surface);
+      border: 1px solid var(--sp-line);
+      border-radius: 15px;
+    }
+    #supplier-ui-prototype .sp-progress-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 11px; font-size: 12px; color: var(--sp-muted); }
+    #supplier-ui-prototype .sp-progress-head strong { color: var(--sp-ink); font-weight: 500; }
+    #supplier-ui-prototype .sp-steps { display: flex; min-width: 930px; }
+    #supplier-ui-prototype .sp-step {
+      position: relative;
+      flex: 1 0 76px;
+      padding: 0 4px;
+      border: 0;
+      background: transparent;
+      text-align: center;
+      color: var(--sp-muted);
+    }
+    #supplier-ui-prototype .sp-step::before {
+      content: "";
+      position: absolute;
+      top: 13px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--sp-line);
+    }
+    #supplier-ui-prototype .sp-step:first-child::before { left: 50%; }
+    #supplier-ui-prototype .sp-step:last-child::before { right: 50%; }
+    #supplier-ui-prototype .sp-step-number {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      margin: 0 auto 7px;
+      border: 2px solid var(--sp-line);
+      border-radius: 50%;
+      background: var(--sp-surface);
+      font-size: 11px;
+    }
+    #supplier-ui-prototype .sp-step-label { display: block; font-size: 11px; line-height: 1.25; }
+    #supplier-ui-prototype .sp-step.is-done::before,
+    #supplier-ui-prototype .sp-step.is-active::before { background: var(--sp-accent); }
+    #supplier-ui-prototype .sp-step.is-done .sp-step-number { border-color: var(--sp-accent); background: var(--sp-accent); color: #fff; }
+    #supplier-ui-prototype .sp-step.is-active { color: var(--sp-ink); }
+    #supplier-ui-prototype .sp-step.is-active .sp-step-number { border-color: var(--sp-accent); color: var(--sp-accent); box-shadow: 0 0 0 4px var(--sp-accent-soft); }
+    #supplier-ui-prototype .sp-workspace { display: grid; grid-template-columns: minmax(0, 1fr) 290px; gap: 16px; align-items: start; }
+    #supplier-ui-prototype .sp-panel {
+      background: var(--sp-surface);
+      border: 1px solid var(--sp-line);
+      border-radius: 16px;
+    }
+    #supplier-ui-prototype .sp-panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 17px 18px; border-bottom: 1px solid var(--sp-line); }
+    #supplier-ui-prototype .sp-panel-title { margin: 0; font-size: 16px; line-height: 1.3; font-weight: 500; }
+    #supplier-ui-prototype .sp-panel-sub { margin: 4px 0 0; color: var(--sp-muted); font-size: 12px; line-height: 1.4; }
+    #supplier-ui-prototype .sp-panel-body { padding: 17px 18px; }
+    #supplier-ui-prototype .sp-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: var(--sp-accent-soft);
+      color: var(--sp-accent);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    #supplier-ui-prototype .sp-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    #supplier-ui-prototype .sp-status.success { background: var(--sp-success-soft); color: var(--sp-success); }
+    #supplier-ui-prototype .sp-status.warn { background: var(--sp-warn-soft); color: var(--sp-warn); }
+    #supplier-ui-prototype .sp-status.danger { background: var(--sp-danger-soft); color: var(--sp-danger); }
+    #supplier-ui-prototype .sp-kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
+    #supplier-ui-prototype .sp-kpi { padding: 12px; border-radius: 12px; background: var(--sp-surface-2); }
+    #supplier-ui-prototype .sp-kpi-label { color: var(--sp-muted); font-size: 11px; }
+    #supplier-ui-prototype .sp-kpi-value { margin-top: 4px; font-size: 19px; font-weight: 500; }
+    #supplier-ui-prototype .sp-kpi-note { margin-top: 2px; color: var(--sp-muted); font-size: 11px; }
+    #supplier-ui-prototype .sp-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    #supplier-ui-prototype .sp-field { display: grid; gap: 6px; }
+    #supplier-ui-prototype .sp-field.wide { grid-column: 1 / -1; }
+    #supplier-ui-prototype .sp-field label { color: var(--sp-muted); font-size: 11px; }
+    #supplier-ui-prototype .sp-input {
+      min-height: 40px;
+      width: 100%;
+      padding: 9px 10px;
+      border: 1px solid var(--sp-line);
+      border-radius: 9px;
+      background: var(--sp-surface-2);
+      color: var(--sp-ink);
+      font-size: 13px;
+    }
+    #supplier-ui-prototype textarea.sp-input { min-height: 70px; resize: vertical; }
+    #supplier-ui-prototype .sp-table-wrap { overflow-x: auto; }
+    #supplier-ui-prototype .sp-table { width: 100%; border-collapse: collapse; min-width: 620px; }
+    #supplier-ui-prototype .sp-table th { padding: 9px 10px; border-bottom: 1px solid var(--sp-line); color: var(--sp-muted); font-size: 11px; font-weight: 500; text-align: left; }
+    #supplier-ui-prototype .sp-table td { padding: 11px 10px; border-bottom: 1px solid var(--sp-line); font-size: 12px; vertical-align: middle; }
+    #supplier-ui-prototype .sp-table tr:last-child td { border-bottom: 0; }
+    #supplier-ui-prototype .sp-unit { font-weight: 500; }
+    #supplier-ui-prototype .sp-unit-sub { margin-top: 2px; color: var(--sp-muted); font-size: 11px; }
+    #supplier-ui-prototype .sp-btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    #supplier-ui-prototype .sp-btn {
+      min-height: 38px;
+      padding: 8px 12px;
+      border: 1px solid var(--sp-line);
+      border-radius: 9px;
+      background: var(--sp-surface);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    #supplier-ui-prototype .sp-btn.primary { border-color: var(--sp-accent); background: var(--sp-accent); color: #fff; }
+    #supplier-ui-prototype .sp-btn.soft { border-color: transparent; background: var(--sp-accent-soft); color: var(--sp-accent); }
+    #supplier-ui-prototype .sp-btn.danger { border-color: var(--sp-danger); color: var(--sp-danger); }
+    #supplier-ui-prototype .sp-btn[aria-pressed="true"] { border-color: var(--sp-accent); background: var(--sp-accent-soft); color: var(--sp-accent); }
+    #supplier-ui-prototype .sp-checklist { display: grid; gap: 9px; }
+    #supplier-ui-prototype .sp-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 10px;
+      border-radius: 10px;
+      background: var(--sp-surface-2);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    #supplier-ui-prototype .sp-check-mark {
+      display: grid;
+      place-items: center;
+      flex: 0 0 20px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--sp-success-soft);
+      color: var(--sp-success);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    #supplier-ui-prototype .sp-note { padding: 11px 12px; border-radius: 10px; background: var(--sp-accent-soft); color: var(--sp-accent); font-size: 12px; line-height: 1.45; }
+    #supplier-ui-prototype .sp-note.warn { background: var(--sp-warn-soft); color: var(--sp-warn); }
+    #supplier-ui-prototype .sp-note.danger { background: var(--sp-danger-soft); color: var(--sp-danger); }
+    #supplier-ui-prototype .sp-side-stack { display: grid; gap: 12px; }
+    #supplier-ui-prototype .sp-side-card { padding: 14px; background: var(--sp-surface); border: 1px solid var(--sp-line); border-radius: 14px; }
+    #supplier-ui-prototype .sp-side-title { margin: 0 0 10px; font-size: 13px; font-weight: 500; }
+    #supplier-ui-prototype .sp-side-text { margin: 0; color: var(--sp-muted); font-size: 12px; line-height: 1.5; }
+    #supplier-ui-prototype .sp-actor { display: flex; gap: 9px; align-items: center; }
+    #supplier-ui-prototype .sp-actor-icon { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--sp-accent-soft); color: var(--sp-accent); }
+    #supplier-ui-prototype .sp-actor-icon svg { width: 17px; height: 17px; }
+    #supplier-ui-prototype .sp-actor-name { font-size: 12px; font-weight: 500; }
+    #supplier-ui-prototype .sp-actor-role { color: var(--sp-muted); font-size: 11px; }
+    #supplier-ui-prototype .sp-timeline { display: grid; gap: 0; }
+    #supplier-ui-prototype .sp-time-row { display: grid; grid-template-columns: 22px 1fr; gap: 9px; min-height: 50px; }
+    #supplier-ui-prototype .sp-time-mark { position: relative; }
+    #supplier-ui-prototype .sp-time-mark::before { content: ""; position: absolute; left: 9px; top: 17px; bottom: -4px; width: 1px; background: var(--sp-line); }
+    #supplier-ui-prototype .sp-time-row:last-child .sp-time-mark::before { display: none; }
+    #supplier-ui-prototype .sp-time-dot { position: relative; z-index: 1; width: 19px; height: 19px; margin-top: 2px; border: 5px solid var(--sp-surface); border-radius: 50%; background: var(--sp-accent); box-shadow: 0 0 0 1px var(--sp-line); }
+    #supplier-ui-prototype .sp-time-copy { padding-bottom: 10px; }
+    #supplier-ui-prototype .sp-time-title { font-size: 12px; font-weight: 500; }
+    #supplier-ui-prototype .sp-time-sub { margin-top: 2px; color: var(--sp-muted); font-size: 11px; line-height: 1.35; }
+    #supplier-ui-prototype .sp-kanban { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
+    #supplier-ui-prototype .sp-column { min-height: 165px; padding: 9px; border-radius: 11px; background: var(--sp-surface-2); }
+    #supplier-ui-prototype .sp-column-title { display: flex; justify-content: space-between; gap: 6px; margin-bottom: 8px; color: var(--sp-muted); font-size: 11px; }
+    #supplier-ui-prototype .sp-unit-card { padding: 9px; margin-bottom: 7px; border: 1px solid var(--sp-line); border-radius: 9px; background: var(--sp-surface); font-size: 11px; }
+    #supplier-ui-prototype .sp-unit-card strong { display: block; margin-bottom: 3px; font-weight: 500; }
+    #supplier-ui-prototype .sp-unit-card span { color: var(--sp-muted); }
+    #supplier-ui-prototype .sp-resolution { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 7px; margin: 12px 0; }
+    #supplier-ui-prototype .sp-resolution .sp-btn { min-height: 56px; padding: 8px; line-height: 1.25; }
+    #supplier-ui-prototype .sp-footer-nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 16px; }
+    #supplier-ui-prototype .sp-footer-nav .sp-btn { min-width: 132px; }
+    #supplier-ui-prototype .sp-footer-nav .sp-btn:disabled { opacity: .45; }
+    #supplier-ui-prototype .sp-mini-list { display: grid; gap: 8px; }
+    #supplier-ui-prototype .sp-mini-row { display: flex; justify-content: space-between; gap: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--sp-line); font-size: 12px; }
+    #supplier-ui-prototype .sp-mini-row:last-child { padding-bottom: 0; border-bottom: 0; }
+    #supplier-ui-prototype .sp-mini-row span:first-child { color: var(--sp-muted); }
+    #supplier-ui-prototype .sp-register-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      align-items: center;
+      margin-bottom: 13px;
+    }
+    #supplier-ui-prototype .sp-register-actions { display: flex; justify-content: flex-end; margin-bottom: 10px; }
+    #supplier-ui-prototype .sp-register-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1 1 260px;
+      min-height: 40px;
+      padding: 0 11px;
+      border: 1px solid var(--sp-line);
+      border-radius: 9px;
+      background: var(--sp-surface-2);
+      color: var(--sp-muted);
+    }
+    #supplier-ui-prototype .sp-register-search svg { width: 16px; height: 16px; }
+    #supplier-ui-prototype .sp-register-search input { width: 100%; border: 0; outline: 0; background: transparent; color: var(--sp-ink); font-size: 12px; }
+    #supplier-ui-prototype .sp-register-select {
+      min-height: 40px;
+      padding: 0 30px 0 10px;
+      border: 1px solid var(--sp-line);
+      border-radius: 9px;
+      background: var(--sp-surface-2);
+      color: var(--sp-ink);
+      font-size: 12px;
+    }
+    #supplier-ui-prototype .sp-object-button {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--sp-accent);
+      font-size: 12px;
+      font-weight: 500;
+      text-align: left;
+    }
+    #supplier-ui-prototype .sp-object-button:hover { text-decoration: underline; }
+    #supplier-ui-prototype .sp-register-foot { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-top: 13px; color: var(--sp-muted); font-size: 11px; }
+    #supplier-ui-prototype .sp-pagination { display: flex; gap: 5px; }
+    #supplier-ui-prototype .sp-page-button { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--sp-line); border-radius: 8px; background: var(--sp-surface); font-size: 11px; }
+    #supplier-ui-prototype .sp-page-button[aria-current="page"] { border-color: var(--sp-accent); background: var(--sp-accent-soft); color: var(--sp-accent); }
+    #supplier-ui-prototype .sp-dashboard-layout { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(260px, .75fr); gap: 16px; }
+    #supplier-ui-prototype .sp-dashboard-main { display: grid; gap: 14px; }
+    #supplier-ui-prototype .sp-dashboard-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    #supplier-ui-prototype .sp-dashboard-kpi { min-height: 104px; padding: 14px; border: 1px solid var(--sp-line); border-radius: 13px; background: var(--sp-surface); }
+    #supplier-ui-prototype .sp-dashboard-kpi-top { display: flex; justify-content: space-between; gap: 8px; color: var(--sp-muted); font-size: 11px; }
+    #supplier-ui-prototype .sp-dashboard-kpi-top svg { width: 17px; height: 17px; color: var(--sp-accent); }
+    #supplier-ui-prototype .sp-dashboard-kpi-value { margin-top: 10px; font-size: 24px; font-weight: 500; }
+    #supplier-ui-prototype .sp-dashboard-kpi-note { margin-top: 3px; color: var(--sp-muted); font-size: 11px; }
+    #supplier-ui-prototype .sp-priority-list { display: grid; gap: 8px; }
+    #supplier-ui-prototype .sp-priority-item { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 11px; align-items: center; padding: 11px; border: 1px solid var(--sp-line); border-radius: 11px; background: var(--sp-surface-2); }
+    #supplier-ui-prototype .sp-priority-icon { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--sp-accent-soft); color: var(--sp-accent); }
+    #supplier-ui-prototype .sp-priority-icon.warn { background: var(--sp-warn-soft); color: var(--sp-warn); }
+    #supplier-ui-prototype .sp-priority-icon.danger { background: var(--sp-danger-soft); color: var(--sp-danger); }
+    #supplier-ui-prototype .sp-priority-icon svg { width: 17px; height: 17px; }
+    #supplier-ui-prototype .sp-priority-title { font-size: 12px; font-weight: 500; }
+    #supplier-ui-prototype .sp-priority-sub { margin-top: 3px; color: var(--sp-muted); font-size: 11px; line-height: 1.35; }
+    #supplier-ui-prototype .sp-schedule-list { display: grid; gap: 10px; }
+    #supplier-ui-prototype .sp-schedule-row { display: grid; grid-template-columns: 64px 1fr; gap: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--sp-line); }
+    #supplier-ui-prototype .sp-schedule-row:last-child { padding-bottom: 0; border-bottom: 0; }
+    #supplier-ui-prototype .sp-schedule-time { color: var(--sp-accent); font-size: 11px; font-weight: 500; }
+    #supplier-ui-prototype .sp-schedule-title { font-size: 12px; font-weight: 500; }
+    #supplier-ui-prototype .sp-schedule-sub { margin-top: 3px; color: var(--sp-muted); font-size: 11px; line-height: 1.35; }
+    #supplier-ui-prototype .sp-product-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    #supplier-ui-prototype .sp-product-card { display: grid; overflow: hidden; border: 1px solid var(--sp-line); border-radius: 14px; background: var(--sp-surface); }
+    #supplier-ui-prototype .sp-product-photo { display: grid; place-items: center; min-height: 150px; background: linear-gradient(145deg, var(--sp-accent-soft), var(--sp-surface-2)); color: var(--sp-accent); }
+    #supplier-ui-prototype .sp-product-photo svg { width: 74px; height: 74px; stroke-width: 1.25; }
+    #supplier-ui-prototype .sp-product-photo.electric { background: linear-gradient(145deg, var(--sp-success-soft), var(--sp-surface-2)); color: var(--sp-success); }
+    #supplier-ui-prototype .sp-product-photo.compact { background: linear-gradient(145deg, var(--sp-warn-soft), var(--sp-surface-2)); color: var(--sp-warn); }
+    #supplier-ui-prototype .sp-product-body { display: grid; gap: 8px; padding: 13px; }
+    #supplier-ui-prototype .sp-product-name { font-size: 14px; font-weight: 500; }
+    #supplier-ui-prototype .sp-product-sub { color: var(--sp-muted); font-size: 11px; line-height: 1.4; }
+    #supplier-ui-prototype .sp-product-price { font-size: 18px; font-weight: 500; }
+    #supplier-ui-prototype .sp-product-meta { display: flex; flex-wrap: wrap; gap: 5px; }
+    #supplier-ui-prototype .sp-product-tag { padding: 4px 7px; border-radius: 999px; background: var(--sp-surface-2); color: var(--sp-muted); font-size: 10px; }
+    #supplier-ui-prototype .sp-product-hero { display: grid; grid-template-columns: minmax(240px, .9fr) minmax(0, 1.1fr); gap: 18px; }
+    #supplier-ui-prototype .sp-product-hero .sp-product-photo { min-height: 280px; border-radius: 13px; }
+    #supplier-ui-prototype .sp-section-title { margin: 18px 0 9px; font-size: 13px; font-weight: 500; }
+    #supplier-ui-prototype .sp-info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+    #supplier-ui-prototype .sp-info-item { padding: 10px; border-radius: 10px; background: var(--sp-surface-2); }
+    #supplier-ui-prototype .sp-info-label { color: var(--sp-muted); font-size: 10px; }
+    #supplier-ui-prototype .sp-info-value { margin-top: 4px; font-size: 12px; line-height: 1.4; }
+    #supplier-ui-prototype .sp-media-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
+    #supplier-ui-prototype .sp-media-item { min-height: 112px; padding: 10px; border: 1px solid var(--sp-line); border-radius: 11px; background: linear-gradient(145deg, var(--sp-surface-2), var(--sp-surface)); color: var(--sp-muted); }
+    #supplier-ui-prototype .sp-media-item svg { width: 28px; height: 28px; color: var(--sp-accent); }
+    #supplier-ui-prototype .sp-media-title { margin-top: 26px; color: var(--sp-ink); font-size: 11px; font-weight: 500; }
+    #supplier-ui-prototype .sp-media-sub { margin-top: 3px; font-size: 10px; }
+    @media (max-width: 980px) {
+      #supplier-ui-prototype .sp-topbar { grid-template-columns: 1fr auto; }
+      #supplier-ui-prototype .sp-role-switcher { grid-column: 1 / -1; grid-row: 2; }
+      #supplier-ui-prototype .sp-layout { grid-template-columns: 76px minmax(0, 1fr); }
+      #supplier-ui-prototype .sp-sidebar { padding: 16px 8px; }
+      #supplier-ui-prototype .sp-account, #supplier-ui-prototype .sp-nav-label, #supplier-ui-prototype .sp-nav-button span:not(.sp-nav-badge) { display: none; }
+      #supplier-ui-prototype .sp-nav-button { justify-content: center; }
+      #supplier-ui-prototype .sp-nav-badge { position: absolute; transform: translate(13px, -12px); }
+      #supplier-ui-prototype .sp-workspace { grid-template-columns: 1fr; }
+      #supplier-ui-prototype .sp-side-stack { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      #supplier-ui-prototype .sp-product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 700px) {
+      #supplier-ui-prototype .sp-app { border-radius: 14px; }
+      #supplier-ui-prototype .sp-topbar { padding: 12px; }
+      #supplier-ui-prototype .sp-brand-sub { display: none; }
+      #supplier-ui-prototype .sp-top-actions .sp-avatar { display: none; }
+      #supplier-ui-prototype .sp-role-button { font-size: 12px; }
+      #supplier-ui-prototype .sp-layout { display: block; }
+      #supplier-ui-prototype .sp-sidebar { display: flex; overflow-x: auto; padding: 8px; border-right: 0; border-bottom: 1px solid var(--sp-line); }
+      #supplier-ui-prototype .sp-nav { display: flex; }
+      #supplier-ui-prototype .sp-nav-button { width: 42px; flex: 0 0 42px; }
+      #supplier-ui-prototype .sp-main { padding: 14px; }
+      #supplier-ui-prototype .sp-heading-row { display: block; }
+      #supplier-ui-prototype .sp-heading-actions { justify-content: flex-start; margin-top: 10px; }
+      #supplier-ui-prototype .sp-scenario-chip { margin-top: 10px; }
+      #supplier-ui-prototype .sp-kpis, #supplier-ui-prototype .sp-side-stack, #supplier-ui-prototype .sp-form-grid { grid-template-columns: 1fr; }
+      #supplier-ui-prototype .sp-source-choice, #supplier-ui-prototype .sp-product-grid, #supplier-ui-prototype .sp-product-hero, #supplier-ui-prototype .sp-info-grid, #supplier-ui-prototype .sp-media-grid { grid-template-columns: 1fr; }
+      #supplier-ui-prototype .sp-field.wide { grid-column: auto; }
+      #supplier-ui-prototype .sp-kanban { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      #supplier-ui-prototype .sp-resolution { grid-template-columns: 1fr 1fr; }
+      #supplier-ui-prototype .sp-drawer { grid-template-columns: 1fr; }
+      #supplier-ui-prototype .sp-dashboard-layout, #supplier-ui-prototype .sp-dashboard-kpis { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <section class="sp-app" aria-label="Кликабельный прототип личного кабинета поставщика">
+    <header class="sp-topbar">
+      <div class="sp-brand">
+        <div class="sp-logo" aria-hidden="true">ПЛ</div>
+        <div class="sp-brand-copy">
+          <div class="sp-brand-title">Поставка ЛК</div>
+          <div class="sp-brand-sub">управление поставкой имущества</div>
+        </div>
+      </div>
+      <div class="sp-role-switcher" aria-label="Тестовые роли">
+        <button class="sp-role-button cursor-interaction" type="button" data-role="manager"><span class="sp-role-dot"></span>Менеджер</button>
+        <button class="sp-role-button cursor-interaction" type="button" data-role="supplier"><span class="sp-role-dot"></span>Поставщик</button>
+        <button class="sp-role-button cursor-interaction" type="button" data-role="receiver"><span class="sp-role-dot"></span>Приёмщик</button>
+      </div>
+      <div class="sp-top-actions">
+        <button class="sp-icon-button cursor-interaction" type="button" data-drawer="messages" aria-label="Сообщения"><i data-lucide="message-square" aria-hidden="true"></i><span class="sp-count">2</span></button>
+        <button class="sp-icon-button cursor-interaction" type="button" data-drawer="notifications" aria-label="Уведомления"><i data-lucide="bell" aria-hidden="true"></i><span class="sp-count">4</span></button>
+        <div class="sp-avatar" id="sp-avatar" aria-hidden="true">МО</div>
+      </div>
+    </header>
+
+    <div class="sp-drawer" id="sp-drawer" hidden aria-live="polite"></div>
+
+    <div class="sp-layout">
+      <aside class="sp-sidebar" aria-label="Основная навигация">
+        <div class="sp-account">
+          <div class="sp-account-name" id="sp-account-name"></div>
+          <div class="sp-account-org" id="sp-account-org"></div>
+        </div>
+        <div class="sp-nav-label">Работа</div>
+        <nav class="sp-nav" id="sp-nav"></nav>
+      </aside>
+
+      <main class="sp-main">
+        <div class="sp-heading-row">
+          <div>
+            <div class="sp-eyebrow" id="sp-role-caption"></div>
+            <h2 id="sp-page-title"></h2>
+            <p class="sp-lead" id="sp-page-lead"></p>
+          </div>
+          <div class="sp-heading-actions"><div class="sp-scenario-chip" id="sp-scenario-chip">Выбранный объект<strong>5 синих автобусов + 3 красных полуавтобуса</strong></div></div>
+        </div>
+        <div class="sp-back-row"><button class="sp-btn cursor-interaction is-hidden" id="sp-back-registry" type="button"><i data-lucide="arrow-left" aria-hidden="true"></i> Вернуться в реестр</button></div>
+
+        <section class="sp-progress-wrap" id="sp-process-progress" aria-label="Пошаговый сценарий">
+          <div class="sp-progress-head"><strong>Сквозной путь заказа</strong><span id="sp-progress-label"></span></div>
+          <div class="sp-steps" id="sp-steps"></div>
+        </section>
+
+        <div id="sp-screen" aria-live="polite"></div>
+
+        <div class="sp-footer-nav" id="sp-process-footer">
+          <button class="sp-btn cursor-interaction" id="sp-prev" type="button">← Предыдущий шаг</button>
+          <button class="sp-btn primary cursor-interaction" id="sp-next" type="button">Следующий шаг →</button>
+        </div>
+      </main>
+    </div>
+  </section>
+
+  <script>
+    (() => {
+      const root = document.getElementById('supplier-ui-prototype');
+      if (!root) return;
+
+      const roles = {
+        manager: { label: 'Менеджер', name: 'Мария Орлова', org: 'Заказчик · Отдел закупок', initials: 'МО', start: 1 },
+        supplier: { label: 'Поставщик', name: 'Алексей Воронцов', org: 'ООО «Трансмаш»', initials: 'АВ', start: 0 },
+        receiver: { label: 'Технический приёмщик', name: 'Сергей Волков', org: 'Служба технической приёмки', initials: 'СВ', start: 6 }
+      };
+
+      const steps = [
+        { short: 'Каталог', title: 'Регистрация и каталог поставщика', lead: 'Поставщик заполняет профиль, ассортимент и наличие до первого запроса.', role: 'supplier', section: 'catalog' },
+        { short: 'Запрос КП', title: 'Создание запроса коммерческого предложения', lead: 'Менеджер выбирает позиции из каталога или описывает требования вручную.', role: 'manager', section: 'requests' },
+        { short: 'КП', title: 'Решение поставщика по каждой единице', lead: 'Поставщик указывает, что поставит, сроки, наличие и отправляет одно КП.', role: 'supplier', section: 'offers' },
+        { short: 'Решение', title: 'Рассмотрение КП менеджером', lead: 'Решение фиксируется отдельно по каждой предполагаемой единице имущества.', role: 'manager', section: 'offers' },
+        { short: 'Договор', title: 'Договор и версия заказа', lead: 'После заключения договора создаются конкретные договорные единицы и контрольные даты.', role: 'manager', section: 'orders' },
+        { short: 'Готовность', title: 'Изготовление, склад и готовность к приёмке', lead: 'Поставщик меняет статус каждой договорной единицы независимо.', role: 'supplier', section: 'orders' },
+        { short: 'Приёмка', title: 'Выбор единиц и результат приёмки', lead: 'Приёмщик сам решает, какие готовые единицы принять сейчас, и фиксирует результат.', role: 'receiver', section: 'acceptance' },
+        { short: 'Рекламация', title: 'Рекламация по отклонённой единице', lead: 'Непринятая единица не получает VIN и инвентарный номер заказчика.', role: 'receiver', section: 'claims' },
+        { short: 'Решение', title: 'Разбор рекламации и повторная приёмка', lead: 'Менеджер выбирает решение; обязательство сохраняется до замены или изменения договора.', role: 'manager', section: 'claims' },
+        { short: 'Отгрузка', title: 'Отгрузка принятых единиц', lead: 'На каждую единицу создаётся отдельная запись отгрузки, даже если транспорт общий.', role: 'supplier', section: 'shipments' },
+        { short: 'Доставка', title: 'Подтверждение передачи клиенту', lead: 'Менеджер фиксирует доставку только для договоров, где она входит в обязательства.', role: 'manager', section: 'shipments' },
+        { short: 'Закрытие', title: 'Автоматическое закрытие заказа', lead: 'Система проверяет комплектность, приёмку, доставку и отсутствие открытых рекламаций.', role: 'manager', section: 'orders' }
+      ];
+
+      const navByRole = {
+        manager: [
+          ['layout-dashboard', 'Рабочий стол', 'dashboard', 0],
+          ['file-plus-2', 'Запросы КП', 'requests', 1],
+          ['file-check-2', 'Коммерческие предложения', 'offers', 3],
+          ['package-check', 'Договоры и заказы', 'orders', 4],
+          ['clipboard-check', 'Приёмка', 'acceptance', 6],
+          ['triangle-alert', 'Рекламации', 'claims', 8],
+          ['truck', 'Поставки', 'shipments', 10],
+          ['boxes', 'Каталог', 'catalog', 0]
+        ],
+        supplier: [
+          ['layout-dashboard', 'Рабочий стол', 'dashboard', 0],
+          ['inbox', 'Запросы КП', 'requests', 2],
+          ['file-check-2', 'Коммерческие предложения', 'offers', 2],
+          ['package-check', 'Договоры', 'orders', 5],
+          ['bus-front', 'Имущество', 'acceptance', 5],
+          ['triangle-alert', 'Рекламации', 'claims', 7],
+          ['truck', 'Доставка', 'shipments', 9],
+          ['boxes', 'Каталог', 'catalog', 0]
+        ],
+        receiver: [
+          ['layout-dashboard', 'Рабочий стол', 'dashboard', 0],
+          ['package-check', 'Договоры', 'orders', 4],
+          ['calendar-check-2', 'План приёмок', 'acceptance', 6],
+          ['triangle-alert', 'Рекламации', 'claims', 7],
+          ['badge-check', 'Принятое имущество', 'accepted', 6],
+          ['book-open', 'Каталог', 'catalog', 0]
+        ]
+      };
+
+      const state = { step: 0, role: 'supplier', drawer: null, resolution: 'replace', requestSource: 'manual', offerSource: 'request', creatingRequest: false, creatingOffer: false, creatingContract: false, creatingClaim: false, product: 'city', view: 'dashboard', section: 'dashboard' };
+
+      function getRegistryMeta(section) {
+        const common = {
+          manager: {
+            requests: ['Реестр запросов КП', 'Все запросы коммерческих предложений: черновики, отправленные и завершённые.', '24 запроса'],
+            offers: ['Реестр коммерческих предложений', 'Полученные КП и текущие решения менеджера по предложениям.', '18 предложений'],
+            orders: ['Реестр договоров и заказов', 'Основные условия договоров, версии заказов, комплектность и общий статус.', '11 заказов'],
+            acceptance: ['Реестр имущества на приёмке', 'Единицы имущества от статуса «Готово к приёмке» до финального результата.', '37 единиц'],
+            claims: ['Реестр рекламаций', 'Все рекламации по единицам имущества, решения и ответственные.', '6 рекламаций'],
+            shipments: ['Реестр поставок', 'Принятое имущество, которое должно быть передано внешним получателям.', '29 записей']
+          },
+          supplier: {
+            requests: ['Входящие запросы КП', 'Запросы, которые менеджеры направили ООО «Трансмаш» для подготовки ответа.', '9 запросов'],
+            offers: ['Коммерческие предложения ООО «Трансмаш»', 'Ответы на запросы менеджеров: черновики, отправленные, возвращённые и согласованные.', '7 предложений'],
+            orders: ['Договоры с ООО «Трансмаш»', 'Предмет, сумма, количество имущества и статус исполнения договоров этого поставщика.', '6 договоров'],
+            acceptance: ['Имущество ООО «Трансмаш»', 'Произведённые единицы имущества и их движение к технической приёмке.', '42 единицы'],
+            claims: ['Рекламации поставщику', 'Рекламации, поступившие ООО «Трансмаш» в ходе приёмки имущества.', '3 рекламации'],
+            shipments: ['Доставка принятого имущества', 'Карточки принятых единиц, доставку которых нужно проконтролировать до клиента.', '12 единиц']
+          },
+          receiver: {
+            orders: ['Договоры для планирования приёмки', 'Заключённые договоры разных поставщиков, сроки и условия будущей приёмки.', '14 договоров'],
+            acceptance: ['План и реестр приёмок', 'Выезды по датам, поставщикам и адресам со списком имущества для заполнения карточек.', '8 приёмок'],
+            claims: ['Мои рекламации', 'Рекламации, которые приёмщик оформил по результатам осмотра имущества.', '5 рекламаций'],
+            accepted: ['Принятое имущество', 'Карточки имущества, принятого техническим приёмщиком.', '64 карточки']
+          }
+        };
+        const values = common[state.role][section];
+        return values ? { title: values[0], lead: values[1], count: values[2] } : null;
+      }
+
+      const status = (text, kind = '') => `<span class="sp-status ${kind}">${text}</span>`;
+      const kpi = (label, value, note = '') => `<div class="sp-kpi"><div class="sp-kpi-label">${label}</div><div class="sp-kpi-value">${value}</div>${note ? `<div class="sp-kpi-note">${note}</div>` : ''}</div>`;
+      const actor = (role) => {
+        const r = roles[role];
+        return `<div class="sp-actor"><div class="sp-actor-icon"><i data-lucide="user-round" aria-hidden="true"></i></div><div><div class="sp-actor-name">${r.name}</div><div class="sp-actor-role">${r.label}</div></div></div>`;
+      };
+      const side = (role, action, note) => `
+        <div class="sp-side-stack">
+          <section class="sp-side-card"><h3 class="sp-side-title">Сейчас работает</h3>${actor(role)}</section>
+          <section class="sp-side-card"><h3 class="sp-side-title">Главное действие</h3><p class="sp-side-text">${action}</p></section>
+          <section class="sp-side-card"><h3 class="sp-side-title">Контроль системы</h3><p class="sp-side-text">${note}</p></section>
+        </div>`;
+      const panel = (title, sub, badge, body) => `<section class="sp-panel"><div class="sp-panel-head"><div><h3 class="sp-panel-title">${title}</h3><p class="sp-panel-sub">${sub}</p></div>${badge}</div><div class="sp-panel-body">${body}</div></section>`;
+      const workspace = (main, aside) => `<div class="sp-workspace">${main}${aside}</div>`;
+
+      const screens = [
+        () => workspace(
+          panel('Профиль и каталог ООО «Трансмаш»', 'Профиль доступен менеджерам сразу после самостоятельной регистрации', status('Профиль активен', 'success'), `
+            <div class="sp-kpis">${kpi('Товаров в каталоге', '12')}${kpi('Готово на складе', '2 ед.')}${kpi('Новых запросов', '1', 'требует ответа')}</div>
+            <div class="sp-table-wrap"><table class="sp-table"><thead><tr><th>Позиция</th><th>Возможность поставки</th><th>Наличие</th><th>Ориентир по сроку</th></tr></thead><tbody>
+              <tr><td><div class="sp-unit">Автобус городской</div><div class="sp-unit-sub">синий · дизель · 45 мест</div></td><td>${status('Поставляем', 'success')}</td><td>2 на складе</td><td>до 90 дней</td></tr>
+              <tr><td><div class="sp-unit">Полуавтобус</div><div class="sp-unit-sub">красный · 20 мест</div></td><td>${status('Поставляем', 'success')}</td><td>под заказ</td><td>до 120 дней</td></tr>
+              <tr><td><div class="sp-unit">Электробус</div><div class="sp-unit-sub">комплектация по ТЗ</div></td><td>${status('По согласованию', 'warn')}</td><td>нет</td><td>индивидуально</td></tr>
+            </tbody></table></div>
+            <div class="sp-btn-row"><button class="sp-btn primary" type="button">Добавить товар</button><button class="sp-btn" type="button">Изменить наличие</button></div>`),
+          side('supplier', 'Поддерживать актуальный каталог и наличие.', 'Запрос можно создать из каталога или по свободному описанию.')
+        ),
+        () => workspace(
+          panel('Новый запрос КП', 'ЗКП-2026-041 · ООО «Трансмаш»', status('Черновик'), `
+            <div class="sp-source-choice" aria-label="Способ добавления имущества">
+              <button class="sp-source-option cursor-interaction" type="button" data-request-source="manual" aria-pressed="${state.requestSource === 'manual'}"><i data-lucide="file-pen-line" aria-hidden="true"></i><span><strong>Создать с нуля</strong><span>Ввести наименование, количество и требования вручную</span></span></button>
+              <button class="sp-source-option cursor-interaction" type="button" data-request-source="catalog" aria-pressed="${state.requestSource === 'catalog'}"><i data-lucide="shopping-cart" aria-hidden="true"></i><span><strong>Добавить из каталога</strong><span>Выбрать готовую модель и перенести её характеристики</span></span></button>
+            </div>
+            <div class="sp-form-grid">
+              <div class="sp-field"><label>Предмет закупки</label><input class="sp-input" value="${state.requestSource === 'catalog' ? 'Автобус ТМ-Город 45' : 'Пассажирский транспорт'}" ${state.creatingRequest ? '' : 'readonly'}></div>
+              <div class="sp-field"><label>Ответить до</label><input class="sp-input" value="15.10.2026" ${state.creatingRequest ? '' : 'readonly'}></div>
+              <div class="sp-field wide"><label>Условия</label><textarea class="sp-input" ${state.creatingRequest ? '' : 'readonly'}>Указать стоимость, срок готовности и наличие на складе отдельно по каждой предполагаемой единице.</textarea></div>
+            </div>
+            <div class="sp-table-wrap"><table class="sp-table"><thead><tr><th>Позиция</th><th>Количество</th><th>Характеристики</th><th>Предполагаемые единицы</th></tr></thead><tbody>
+              <tr><td class="sp-unit">Автобус</td><td>5</td><td>синий, 45 мест</td><td>BUS-01…BUS-05</td></tr>
+              <tr><td class="sp-unit">Полуавтобус</td><td>3</td><td>красный, 20 мест</td><td>SEMI-01…SEMI-03</td></tr>
+            </tbody></table></div>
+            <div class="sp-btn-row"><button class="sp-btn primary" type="button">Отправить поставщику</button><button class="sp-btn" type="button">Сохранить черновик</button><button class="sp-btn soft" type="button">Добавить позицию</button></div>`),
+          side('manager', 'Проверить восемь предполагаемых единиц и отправить один запрос.', 'После отправки поставщик получит уведомление в кабинете и по email.')
+        ),
+        () => workspace(
+          panel(state.creatingOffer ? 'Новое коммерческое предложение' : 'Ответ на запрос ЗКП-2026-041', state.creatingOffer ? 'Поставщик создаёт КП на основании входящего запроса или заполняет его с нуля' : 'Решение и условия указываются по каждой предполагаемой единице', status(state.creatingOffer ? 'Черновик' : 'Нужно отправить КП', state.creatingOffer ? '' : 'warn'), `
+            ${state.creatingOffer ? `<div class="sp-source-choice" aria-label="Основание коммерческого предложения"><button class="sp-source-option cursor-interaction" type="button" data-offer-source="request" aria-pressed="${state.offerSource === 'request'}"><i data-lucide="inbox" aria-hidden="true"></i><span><strong>На основании запроса</strong><span>Выбрать входящий запрос менеджера и перенести позиции</span></span></button><button class="sp-source-option cursor-interaction" type="button" data-offer-source="blank" aria-pressed="${state.offerSource === 'blank'}"><i data-lucide="file-plus-2" aria-hidden="true"></i><span><strong>Пустое КП</strong><span>Заполнить предмет, количество, цены и сроки самостоятельно</span></span></button></div><div class="sp-form-grid" style="margin-bottom:14px"><div class="sp-field"><label>Основание</label><input class="sp-input" value="${state.offerSource === 'request' ? 'ЗКП-2026-041' : ''}" placeholder="Выберите запрос или оставьте пустым"></div><div class="sp-field"><label>Название КП</label><input class="sp-input" value="Поставка пассажирского транспорта"></div></div>` : ''}
+            <div class="sp-kpis">${kpi('Запрошено', state.creatingOffer && state.offerSource === 'blank' ? 'Не указано' : '8 ед.')}${kpi('Предлагаем', state.creatingOffer && state.offerSource === 'blank' ? '0 ед.' : '7 ед.', state.offerSource === 'blank' ? 'добавьте позиции' : '2 уже на складе')}${kpi('Не предлагаем', state.creatingOffer && state.offerSource === 'blank' ? '0 ед.' : '1 ед.')}</div>
+            <div class="sp-table-wrap"><table class="sp-table"><thead><tr><th>Единицы</th><th>Решение</th><th>Готовность</th><th>Цена за единицу</th></tr></thead><tbody>
+              ${state.creatingOffer && state.offerSource === 'blank' ? '<tr><td><input class="sp-input" placeholder="Наименование и количество"></td><td>Новая позиция</td><td><input class="sp-input" placeholder="Дата или наличие"></td><td><input class="sp-input" placeholder="Цена"></td></tr>' : `<tr><td><div class="sp-unit">BUS-01, BUS-02</div><div class="sp-unit-sub">автобусы синие</div></td><td>${status('Предлагаем', 'success')}</td><td>Есть на складе</td><td>24,8 млн ₽</td></tr><tr><td><div class="sp-unit">BUS-03…BUS-05</div><div class="sp-unit-sub">автобусы синие</div></td><td>${status('Предлагаем', 'success')}</td><td>20.12.2026</td><td>24,8 млн ₽</td></tr><tr><td><div class="sp-unit">SEMI-01, SEMI-02</div><div class="sp-unit-sub">полуавтобусы красные</div></td><td>${status('Предлагаем', 'success')}</td><td>15.01.2027</td><td>16,2 млн ₽</td></tr><tr><td><div class="sp-unit">SEMI-03</div><div class="sp-unit-sub">полуавтобус красный</div></td><td>${status('Не предлагаем', 'danger')}</td><td>—</td><td>—</td></tr>`}
+            </tbody></table></div>
+            <div class="sp-note">Все условия сформируются в одном документе КП. Для каждой предлагаемой позиции обязательны цена и срок готовности.</div>
+            <div class="sp-btn-row"><button class="sp-btn primary" type="button">${state.creatingOffer ? 'Сохранить и отправить КП' : 'Подписать и отправить КП'}</button><button class="sp-btn" type="button">Сохранить черновик</button><button class="sp-btn soft" type="button">Добавить позицию</button></div>`),
+          side('supplier', 'Заполнить решение по каждой единице и отправить одно КП.', 'Пустая цена или срок блокируют отправку только для принятой единицы.')
+        ),
+        () => workspace(
+          panel('Рассмотрение КП № 184', 'Предложение ООО «Трансмаш» от 10.10.2026', status('На рассмотрении', 'warn'), `
+            <div class="sp-kpis">${kpi('Запрошено', '7 ед.')}${kpi('Поставщик может', '5 ед.', 'по цене за единицу')}${kpi('Не покрыто', '2 ед.', 'можно запросить у другого')}</div>
+            <div class="sp-table-wrap"><table class="sp-table"><thead><tr><th>Позиция</th><th>Запрошено</th><th>Поставщик предлагает</th><th>Цена за единицу</th><th>Срок</th><th>Решение менеджера</th></tr></thead><tbody>
+              <tr><td class="sp-unit">Автобус ТМ-Город 45</td><td>5 ед.</td><td>5 ед.</td><td>24,8 млн ₽</td><td>2 на складе, 3 до 20.12.2026</td><td>${status('Согласовано', 'success')}</td></tr>
+              <tr><td class="sp-unit">Полуавтобус ТМ-Полу 20</td><td>2 ед.</td><td>0 ед.</td><td>—</td><td>Поставщик отказал</td><td>${status('Нужен другой поставщик', 'warn')}</td></tr>
+            </tbody></table></div>
+            <div class="sp-btn-row"><button class="sp-btn primary" type="button">Зафиксировать решения</button><button class="sp-btn" type="button">Вернуть выбранные единицы</button><button class="sp-btn soft" type="button">Создать отдельный запрос</button></div>`),
+          side('manager', 'Принять отдельное решение по каждой предложенной единице.', 'Новый запрос другому поставщику создаётся менеджером вручную и не меняет это КП.')
+        ),
+        () => workspace(
+          panel(state.creatingContract ? 'Новый договор купли-продажи' : 'Договор ДП-77/26 · Заказ v1', state.creatingContract ? 'Менеджер самостоятельно заполняет основные условия и состав имущества' : 'Семь договорных единиц по согласованному КП', status(state.creatingContract ? 'Черновик' : 'Исполняется'), `
+            <div class="sp-kpis">${kpi('По договору', state.creatingContract ? '7 ед. выбрано' : '7 ед.')}${kpi('Версия заказа', state.creatingContract ? 'Создаётся' : 'v1')}${kpi('Общий статус', state.creatingContract ? 'Черновик' : 'В работе')}</div>
+            <div class="sp-form-grid">
+              <div class="sp-field"><label>Номер договора</label><input class="sp-input" value="${state.creatingContract ? '' : 'ДП-77/26'}" placeholder="Введите номер ДКП" ${state.creatingContract ? '' : 'readonly'}></div>
+              <div class="sp-field"><label>Поставщик</label><input class="sp-input" value="ООО «Трансмаш»" ${state.creatingContract ? '' : 'readonly'}></div>
+              <div class="sp-field"><label>Дата договора</label><input class="sp-input" value="01.11.2026" ${state.creatingContract ? '' : 'readonly'}></div>
+              <div class="sp-field"><label>Поставка клиенту</label><input class="sp-input" value="Требуется по договору" ${state.creatingContract ? '' : 'readonly'}></div>
+            </div>
+            <div class="sp-table-wrap"><table class="sp-table"><thead><tr><th>Договорные единицы</th><th>План готовности</th><th>Условие доставки</th><th>Статус</th></tr></thead><tbody>
+              <tr><td class="sp-unit">BUS-001, BUS-002</td><td>05.11.2026</td><td>до клиента</td><td>${status('На складе', 'success')}</td></tr>
+              <tr><td class="sp-unit">BUS-003…BUS-005</td><td>20.12.2026</td><td>до клиента</td><td>${status('В производстве')}</td></tr>
+              <tr><td class="sp-unit">SEMI-001, SEMI-002</td><td>15.01.2027</td><td>до клиента</td><td>${status('В производстве')}</td></tr>
+            </tbody></table></div>
+            <div class="sp-section-title">Условия договора купли-продажи</div>
+            <div class="sp-info-grid">
+              <div class="sp-info-item"><div class="sp-info-label">Брендирование техники</div><div class="sp-info-value">Оклейка в фирменные цвета клиента, логотипы и бортовые номера по приложению № 4</div></div>
+              <div class="sp-info-item"><div class="sp-info-label">Комплектность и документы</div><div class="sp-info-value">ЗИП, сервисные книжки, паспорта и сертификаты передаются с каждой единицей</div></div>
+              <div class="sp-info-item"><div class="sp-info-label">Гарантия</div><div class="sp-info-value">24 месяца или 100 000 км пробега с даты подписания акта приёмки</div></div>
+              <div class="sp-info-item"><div class="sp-info-label">Расчёты</div><div class="sp-info-value">30% аванс, 70% после положительной приёмки и передачи документов</div></div>
+            </div>
+            <div class="sp-note">Контрольные даты вводит менеджер. Если зарегистрировано допсоглашение, система создаст v2 и сохранит историю v1.</div>
+            ${state.creatingContract ? '<div class="sp-btn-row"><button class="sp-btn primary" type="button">Зарегистрировать договор</button><button class="sp-btn" type="button">Сохранить черновик</button></div>' : ''}`),
+          side('manager', 'Проверить состав заказа, даты и условия доставки по позициям.', 'Общий статус заказа рассчитывается из статусов всех семи единиц.')
+        ),
+        () => workspace(
+          panel('Исполнение заказа ДП-77/26', 'Статус меняется для каждой договорной единицы', status('2 готовы к приёмке', 'warn'), `
+            <div class="sp-kanban">
+              <div class="sp-column"><div class="sp-column-title"><span>В производстве</span><strong>2</strong></div><div class="sp-unit-card"><strong>SEMI-001</strong><span>план 15.01</span></div><div class="sp-unit-card"><strong>SEMI-002</strong><span>план 15.01</span></div></div>
+              <div class="sp-column"><div class="sp-column-title"><span>Изготовлено</span><strong>1</strong></div><div class="sp-unit-card"><strong>BUS-005</strong><span>ожидает склада</span></div></div>
+              <div class="sp-column"><div class="sp-column-title"><span>На складе</span><strong>2</strong></div><div class="sp-unit-card"><strong>BUS-003</strong><span>можно назначить готовность</span></div><div class="sp-unit-card"><strong>BUS-004</strong><span>можно назначить готовность</span></div></div>
+              <div class="sp-column"><div class="sp-column-title"><span>Готово к приёмке</span><strong>2</strong></div><div class="sp-unit-card"><strong>BUS-001</strong><span>готов с 05.11</span></div><div class="sp-unit-card"><strong>BUS-002</strong><span>готов с 05.11</span></div></div>
+            </div>
+            <div class="sp-btn-row"><button class="sp-btn primary" type="button">Отметить выбранные готовыми</button><button class="sp-btn" type="button">Написать приёмщику</button></div>`),
+          side('supplier', 'Обновлять фактический статус каждой единицы и приглашать на приёмку.', 'При статусе «Готово к приёмке» приёмщик и менеджер получают уведомления и email.')
+        ),
+        () => workspace(
+          panel('Приёмка на площадке поставщика', 'Акт ПР-2026-118 · доступны две готовые единицы', status('Приёмка открыта', 'warn'), `
+            <div class="sp-note warn">Можно принять две готовые единицы сейчас или дождаться остальных. В сценарии выбраны BUS-001 и BUS-002.</div>
+            <div class="sp-table-wrap"><table class="sp-table"><thead><tr><th>Выбор</th><th>Единица</th><th>Результат</th><th>VIN и номер заказчика</th></tr></thead><tbody>
+              <tr><td><input type="checkbox" checked aria-label="Выбрать BUS-001"></td><td><div class="sp-unit">BUS-001</div><div class="sp-unit-sub">автобус синий</div></td><td>${status('Принят', 'success')}</td><td>VIN XTA000000001<br>АВТ-000341</td></tr>
+              <tr><td><input type="checkbox" checked aria-label="Выбрать BUS-002"></td><td><div class="sp-unit">BUS-002</div><div class="sp-unit-sub">автобус синий</div></td><td>${status('Не принят', 'danger')}</td><td>Не присваиваются</td></tr>
+            </tbody></table></div>
+            <div class="sp-form-grid">
+              <div class="sp-field wide"><label>Комментарий по BUS-002</label><textarea class="sp-input" readonly>Повреждение лакокрасочного покрытия правой боковины. Требуется устранение и повторная приёмка.</textarea></div>
+            </div>
+            <div class="sp-btn-row"><button class="sp-btn primary" type="button">Завершить приёмку двух единиц</button><button class="sp-btn" type="button">Сохранить акт</button></div>`),
+          side('receiver', 'Зафиксировать результат отдельно по BUS-001 и BUS-002.', 'VIN и реквизиты имущества обязательны только для положительно принятой единицы.')
+        ),
+        () => workspace(
+          panel(state.creatingClaim ? 'Новая рекламация' : 'Рекламация РК-2026-019', state.creatingClaim ? 'Приёмщик создаёт рекламацию на основании карточки имущества' : 'Создана из отрицательного результата приёмки BUS-002', status('Новая', 'danger'), `
+            ${state.creatingClaim ? '<div class="sp-note" style="margin-bottom:14px">Основание: карточка имущества BUS-002 из акта приёмки ПР-2026-118. Данные поставщика и договора заполнены автоматически.</div>' : ''}
+            <div class="sp-kpis">${kpi('Единица', 'BUS-002')}${kpi('Результат приёмки', state.creatingClaim ? 'Выберите' : 'Отклонена')}${kpi('На балансе заказчика', 'Нет')}</div>
+            <div class="sp-form-grid">
+              <div class="sp-field wide"><label>Карточка имущества</label><input class="sp-input" value="BUS-002 · автобус синий · ООО «Трансмаш» · ДП-77/26" ${state.creatingClaim ? '' : 'readonly'}></div>
+              <div class="sp-field"><label>Категория</label><input class="sp-input" value="Внешний дефект" ${state.creatingClaim ? '' : 'readonly'}></div>
+              <div class="sp-field"><label>Критичность</label><input class="sp-input" value="Требует устранения" ${state.creatingClaim ? '' : 'readonly'}></div>
+              <div class="sp-field wide"><label>Описание</label><textarea class="sp-input" ${state.creatingClaim ? '' : 'readonly'}>Царапина и вмятина на правой боковине. Фото и чек-лист приложены к акту.</textarea></div>
+            </div>
+            <div class="sp-btn-row"><button class="sp-btn primary" type="button">Оформить рекламацию</button><button class="sp-btn" type="button">Добавить фото и видео</button>${state.creatingClaim ? '<button class="sp-btn soft" type="button">Выбрать другую карточку</button>' : ''}</div>`),
+          side('receiver', 'Оформить рекламацию прямо из результата приёмки.', 'Менеджер сразу получает задачу и email. Единица остаётся обязательством поставщика.')
+        ),
+        () => {
+          const choices = [
+            ['repair', 'Устранить недостатки'], ['replace', 'Подготовить замену'], ['accept', 'Принять с отклонениями'], ['addendum', 'Изменить условия'], ['refuse', 'Окончательный отказ']
+          ].map(([id, label]) => `<button class="sp-btn cursor-interaction" data-resolution="${id}" type="button" aria-pressed="${state.resolution === id}">${label}</button>`).join('');
+          const outcomes = {
+            repair: ['Поставщик устраняет дефект BUS-002', 'После готовности система создаст новую попытку приёмки той же единицы.'],
+            replace: ['Поставщик готовит замену BUS-002-R1', 'Замена проходит полный цикл готовности и отдельную повторную приёмку.'],
+            accept: ['Приёмщик оформляет принятие с согласованными отклонениями', 'После положительного решения он укажет VIN и номер имущества.'],
+            addendum: ['Менеджер регистрирует дополнительное соглашение', 'Появится версия заказа v2; исполненное из v1 переносится автоматически.'],
+            refuse: ['Фиксируется отказ от конкретной единицы', 'Заказ не закроется: нужна замена либо дополнительное соглашение.']
+          };
+          const outcome = outcomes[state.resolution];
+          return workspace(
+            panel('Решение по рекламации РК-2026-019', 'Менеджер выбирает отдельное решение для BUS-002', status('В работе', 'warn'), `
+              <div class="sp-resolution">${choices}</div>
+              <div class="sp-note"><strong>${outcome[0]}.</strong><br>${outcome[1]}</div>
+              <div class="sp-timeline" style="margin-top:14px">
+                <div class="sp-time-row"><div class="sp-time-mark"><div class="sp-time-dot"></div></div><div class="sp-time-copy"><div class="sp-time-title">Менеджер зафиксировал решение</div><div class="sp-time-sub">12.11.2026 · поставщик уведомлён</div></div></div>
+                <div class="sp-time-row"><div class="sp-time-mark"><div class="sp-time-dot"></div></div><div class="sp-time-copy"><div class="sp-time-title">Поставщик выполнил решение</div><div class="sp-time-sub">новая готовность к приёмке</div></div></div>
+                <div class="sp-time-row"><div class="sp-time-mark"><div class="sp-time-dot"></div></div><div class="sp-time-copy"><div class="sp-time-title">Приёмщик провёл повторную приёмку</div><div class="sp-time-sub">положительный результат · рекламация закрыта</div></div></div>
+              </div>
+              <div class="sp-btn-row"><button class="sp-btn primary" type="button">Зафиксировать решение</button><button class="sp-btn" type="button">Открыть переписку</button></div>`),
+            side('manager', 'Выбрать решение и назначить ответственных.', 'Финальный отказ сам по себе не уменьшает объём заказа и не позволяет его закрыть.')
+          );
+        },
+        () => workspace(
+          panel('Отгрузка ОТГ-2027-006', 'Одна физическая партия · семь записей по единицам', status('В пути', 'warn'), `
+            <div class="sp-kpis">${kpi('Принято к отгрузке', '7 ед.')}${kpi('Транспорт', '1 автовоз')}${kpi('План прибытия', '22.01.2027')}</div>
+            <div class="sp-table-wrap"><table class="sp-table"><thead><tr><th>Запись</th><th>Единица</th><th>VIN</th><th>Статус</th></tr></thead><tbody>
+              <tr><td>SHIP-001</td><td class="sp-unit">BUS-001</td><td>XTA…0001</td><td>${status('В пути', 'warn')}</td></tr>
+              <tr><td>SHIP-002</td><td class="sp-unit">BUS-002-R1</td><td>XTA…0008</td><td>${status('В пути', 'warn')}</td></tr>
+              <tr><td>SHIP-003…007</td><td class="sp-unit">Остальные 5 единиц</td><td>Зафиксированы</td><td>${status('В пути', 'warn')}</td></tr>
+            </tbody></table></div>
+            <div class="sp-form-grid">
+              <div class="sp-field"><label>Накладная</label><input class="sp-input" value="ТН-7714 от 20.01.2027" readonly></div>
+              <div class="sp-field"><label>Перевозчик</label><input class="sp-input" value="ООО «ТрансЛог»" readonly></div>
+              <div class="sp-field wide"><label>Адрес поставки</label><input class="sp-input" value="г. Москва, ул. Автозаводская, д. 21, площадка МУП «Городской транспорт»" readonly></div>
+              <div class="sp-field"><label>Контакт доставщика</label><input class="sp-input" value="Иван Петров · +7 (495) 555-18-24" readonly></div>
+              <div class="sp-field"><label>Контакт клиента</label><input class="sp-input" value="Анна Смирнова · +7 (495) 555-42-11" readonly></div>
+            </div>
+            <div class="sp-btn-row"><button class="sp-btn primary" type="button">Передать в доставку</button><button class="sp-btn" type="button">Сообщить менеджеру</button></div>`),
+          side('supplier', 'Создать отдельную запись отгрузки на каждую принятую единицу.', 'Один транспорт и одна накладная могут связывать несколько записей отгрузки.')
+        ),
+        () => workspace(
+          panel('Подтверждение передачи клиенту', 'Получатель находится вне личного кабинета', status('Ожидает подтверждения', 'warn'), `
+            <div class="sp-form-grid">
+              <div class="sp-field"><label>Получатель</label><input class="sp-input" value="МУП «Городской транспорт»" readonly></div>
+              <div class="sp-field"><label>Дата передачи</label><input class="sp-input" value="22.01.2027" readonly></div>
+              <div class="sp-field"><label>Документ</label><input class="sp-input" value="Акт передачи № 48" readonly></div>
+              <div class="sp-field"><label>Передано</label><input class="sp-input" value="7 из 7 единиц" readonly></div>
+              <div class="sp-field wide"><label>Адрес поставки</label><input class="sp-input" value="г. Москва, ул. Автозаводская, д. 21, площадка МУП «Городской транспорт»" readonly></div>
+              <div class="sp-field"><label>Контакт доставщика</label><input class="sp-input" value="Иван Петров · +7 (495) 555-18-24" readonly></div>
+              <div class="sp-field"><label>Контакт клиента</label><input class="sp-input" value="Анна Смирнова · +7 (495) 555-42-11" readonly></div>
+            </div>
+            <div class="sp-checklist" style="margin-top:14px">
+              <div class="sp-check"><span class="sp-check-mark">✓</span><span>Все семь записей отгрузки прибыли</span></div>
+              <div class="sp-check"><span class="sp-check-mark">✓</span><span>Документы передачи приложены</span></div>
+              <div class="sp-check"><span class="sp-check-mark">✓</span><span>Расхождений по комплектности нет</span></div>
+            </div>
+            <div class="sp-btn-row"><button class="sp-btn primary" type="button">Подтвердить доставку</button><button class="sp-btn" type="button">Сообщить о расхождении</button></div>`),
+          side('manager', 'Подтвердить передачу всех единиц внешнему получателю.', 'Шаг обязателен только если поставка клиенту включена в договор.')
+        ),
+        () => workspace(
+          panel('Заказ ДП-77/26 исполнен', 'Итоговый статус рассчитан автоматически', status('Закрыт', 'success'), `
+            <div class="sp-kpis">${kpi('Исполнено', '7 из 7')}${kpi('Принято', '7 из 7')}${kpi('Доставлено', '7 из 7')}</div>
+            <div class="sp-checklist">
+              <div class="sp-check"><span class="sp-check-mark">✓</span><span>Все единицы текущей версии заказа исполнены</span></div>
+              <div class="sp-check"><span class="sp-check-mark">✓</span><span>По каждой единице есть положительный результат приёмки и реквизиты</span></div>
+              <div class="sp-check"><span class="sp-check-mark">✓</span><span>Открытых рекламаций нет</span></div>
+              <div class="sp-check"><span class="sp-check-mark">✓</span><span>Доставка внешнему получателю подтверждена менеджером</span></div>
+            </div>
+            <div class="sp-note" style="margin-top:14px">История заказа, версии, акты, КП, переписка и уведомления остаются доступными в карточке договора.</div>
+            <div class="sp-btn-row"><button class="sp-btn primary" type="button">Открыть архив договора</button><button class="sp-btn" type="button">Скачать комплект документов</button></div>`),
+          side('manager', 'Проверить итог и комплект документов.', 'Если хотя бы одна единица не исполнена, есть открытая рекламация или не подтверждена обязательная доставка, статус «Закрыт» недоступен.')
+        )
+      ];
+
+      function registryRows(section) {
+        const manager = {
+          requests: [['ЗКП-2026-041', '5 автобусов + 3 полуавтобуса', 'ООО «Трансмаш»', '15.10.2026', status('Черновик'), 1], ['ЗКП-2026-040', 'Коммунальная техника, 4 ед.', 'ООО «СпецАвто»', '12.10.2026', status('Ожидает ответа', 'warn'), null], ['ЗКП-2026-039', 'Легковые автомобили, 12 ед.', 'АО «Автоцентр»', '08.10.2026', status('КП получено', 'success'), null]],
+          offers: [['КП-2026-184', 'ЗКП-2026-041 · пассажирский транспорт', 'ООО «Трансмаш»', '7 из 8', '156,4 млн ₽', status('На рассмотрении', 'warn'), 3], ['КП-2026-183', 'ЗКП-2026-040 · коммунальная техника', 'ООО «СпецАвто»', '4 из 4', '72,8 млн ₽', status('Требует уточнения'), null], ['КП-2026-181', 'ЗКП-2026-039 · автомобили', 'АО «Автоцентр»', '12 из 12', '38,2 млн ₽', status('Согласовано', 'success'), null]],
+          orders: [['ДП-77/26', '5 автобусов + 2 полуавтобуса', 'ООО «Трансмаш»', '156,4 млн ₽', '7 ед.', status('Исполняется'), 4], ['ДП-74/26', 'Коммунальная техника', 'ООО «СпецАвто»', '72,8 млн ₽', '4 ед.', status('Приёмка', 'warn'), null], ['ДП-69/26', 'Легковые автомобили', 'АО «Автоцентр»', '38,2 млн ₽', '12 ед.', status('Доставка', 'warn'), null]],
+          acceptance: [['BUS-001', 'Автобус синий', 'ООО «Трансмаш»', 'ДП-77/26', status('Принят', 'success'), 'XTA…0001 · АВТ-000341', 'asset'], ['BUS-002', 'Автобус синий', 'ООО «Трансмаш»', 'ДП-77/26', status('Рекламация', 'danger'), 'Не присвоены', 6], ['BUS-003', 'Автобус синий', 'ООО «Трансмаш»', 'ДП-77/26', status('Готово к приёмке', 'warn'), 'Не присвоены', 6]],
+          claims: [['РК-2026-019', 'BUS-002 · ДП-77/26', 'ООО «Трансмаш»', 'Повреждение боковины', status('Новая', 'danger'), 'Не выбрано', 8], ['РК-2026-018', 'KOM-014 · ДП-74/26', 'ООО «СпецАвто»', 'Комплектность', status('Повторная приёмка', 'warn'), 'Замена узла', null]],
+          shipments: [['BUS-001', 'ООО «Трансмаш»', 'ДП-77/26', 'МУП «Городской транспорт»', '22.01.2027', status('В пути', 'warn'), 10], ['BUS-002-R1', 'ООО «Трансмаш»', 'ДП-77/26', 'МУП «Городской транспорт»', '22.01.2027', status('В пути', 'warn'), 10]]
+        };
+        const supplier = {
+          requests: [['ЗКП-2026-041', '5 автобусов + 3 полуавтобуса', 'Мария Орлова', '15.10.2026', status('Требует ответа', 'danger'), 2], ['ЗКП-2026-037', '2 электробуса по ТЗ', 'Ирина Соколова', '18.10.2026', status('КП в работе', 'warn'), 2], ['ЗКП-2026-029', 'Автобус туристический', 'Павел Нестеров', '01.10.2026', status('Ответ направлен', 'success'), null]],
+          offers: [['КП-2026-184', 'ЗКП-2026-041', '5 автобусов + 3 полуавтобуса', '85%', 'сегодня 11:20', status('Черновик', 'warn'), 2], ['КП-2026-179', 'ЗКП-2026-037', '2 электробуса по ТЗ', '40%', 'вчера 16:45', status('Черновик'), 2], ['КП-2026-168', 'ЗКП-2026-029', 'Автобус туристический', '100%', '01.10.2026', status('Отправлено', 'success'), null]],
+          orders: [['ДП-77/26', '5 автобусов + 2 полуавтобуса', '156,4 млн ₽', '7 ед.', 'v1', status('Исполняется'), 5], ['ДП-61/26', '3 городских автобуса', '74,4 млн ₽', '3 ед.', 'v2', status('Приёмка', 'warn'), null], ['ДП-48/26', '1 туристический автобус', '31,8 млн ₽', '1 ед.', 'v1', status('Закрыт', 'success'), null]],
+          acceptance: [['BUS-001', 'Автобус синий', 'ДП-77/26', status('Принят', 'success'), 'Передан в доставку', '22.01.2027', 5], ['BUS-002', 'Автобус синий', 'ДП-77/26', status('Рекламация', 'danger'), 'Ожидает решения', '—', 5], ['BUS-003', 'Автобус синий', 'ДП-77/26', status('Готово к приёмке', 'warn'), 'Приёмка не назначена', '—', 5], ['BUS-004', 'Автобус синий', 'ДП-77/26', status('На складе'), 'Готовится', '—', null]],
+          claims: [['РК-2026-019', 'BUS-002', '12.11.2026', 'Повреждение боковины', status('Новая', 'danger'), 'Ожидает решения менеджера', null], ['РК-2026-012', 'BUS-017', '02.10.2026', 'Неисправность отопителя', status('Устранение', 'warn'), 'Исправить недостатки', null], ['РК-2026-006', 'BUS-009', '18.08.2026', 'Комплектность', status('Закрыта', 'success'), 'Замена', null]],
+          shipments: [['BUS-001', 'АВТ-000341', 'ДП-77/26', 'МУП «Городской транспорт»', '22.01.2027', status('В пути', 'warn'), 9], ['BUS-016', 'АВТ-000298', 'ДП-61/26', 'ГКУ «Автопарк № 2»', '06.10.2026', status('Передано клиенту', 'success'), null]]
+        };
+        const receiver = {
+          orders: [['ДП-77/26', 'ООО «Трансмаш»', '5 автобусов + 2 полуавтобуса', '05.11–15.01', 'г. Тула, Промышленная, 18', status('Готовность частичная', 'warn'), null], ['ДП-74/26', 'ООО «СпецАвто»', '4 машины уборочные', '18.11.2026', 'г. Москва, Складочная, 7', status('Ожидается'), null], ['ДП-69/26', 'АО «Автоцентр»', '12 автомобилей', '29.09.2026', 'г. Химки, Ленинградская, 2', status('Приёмка завершена', 'success'), null]],
+          acceptance: [['14.11 · 10:00', 'ООО «Трансмаш»', 'г. Тула, Промышленная, 18', 'BUS-001, BUS-002', '2 ед.', status('Назначена', 'warn'), 6], ['18.11 · 11:30', 'ООО «СпецАвто»', 'г. Москва, Складочная, 7', 'KOM-011…KOM-014', '4 ед.', status('Ожидает подтверждения'), null], ['22.11 · 09:00', 'АО «Автоцентр»', 'г. Химки, Ленинградская, 2', 'CAR-113, CAR-114', '2 ед.', status('Запланирована'), null]],
+          claims: [['РК-2026-019', 'ООО «Трансмаш»', 'BUS-002', 'Повреждение боковины', '12.11.2026', status('Новая', 'danger'), 7], ['РК-2026-018', 'ООО «СпецАвто»', 'KOM-014', 'Комплектность', '10.11.2026', status('Повторная приёмка', 'warn'), null]],
+          accepted: [['АВТ-000341', 'XTA…0001', 'Автобус городской', 'ООО «Трансмаш»', '12.11.2026', status('Принят', 'success'), 'asset'], ['АВТ-000329', 'WVW…9912', 'Автомобиль', 'АО «Автоцентр»', '29.09.2026', status('Принят', 'success'), 'asset'], ['СПТ-000114', 'KOM…0214', 'Машина уборочная', 'ООО «СпецАвто»', '26.09.2026', status('Принят с отклонениями', 'warn'), 'asset']]
+        };
+        return ({ manager, supplier, receiver })[state.role][section] || [];
+      }
+
+      function registryColumns(section) {
+        const byRole = {
+          manager: { requests: ['Номер', 'Объект запроса', 'Поставщик', 'Ответить до', 'Статус'], offers: ['Номер КП', 'Запрос и объект', 'Поставщик', 'Предложено', 'Стоимость', 'Статус'], orders: ['Договор', 'Предмет', 'Поставщик', 'Сумма', 'Состав', 'Статус'], acceptance: ['Единица', 'Имущество', 'Поставщик', 'Договор', 'Стадия', 'VIN / номер'], claims: ['Рекламация', 'Единица', 'Поставщик', 'Причина', 'Статус', 'Решение'], shipments: ['Единица', 'Поставщик', 'Договор', 'Получатель', 'Дата', 'Статус'] },
+          supplier: { requests: ['Запрос', 'Предмет', 'Менеджер', 'Ответить до', 'Статус'], offers: ['КП', 'Запрос', 'Предмет', 'Заполнено', 'Изменено', 'Статус'], orders: ['Договор', 'Предмет', 'Сумма', 'Состав', 'Версия', 'Статус'], acceptance: ['Единица', 'Имущество', 'Договор', 'Статус имущества', 'Этап передачи', 'Дата'], claims: ['Рекламация', 'Единица', 'Дата приёмки', 'Причина', 'Статус', 'Решение'], shipments: ['Единица', 'Номер имущества', 'Договор', 'Получатель', 'Дата', 'Статус'] },
+          receiver: { orders: ['Договор', 'Поставщик', 'Предмет', 'План готовности', 'Адрес', 'Статус'], acceptance: ['Дата и время', 'Поставщик', 'Адрес', 'Имущество', 'Количество', 'Статус'], claims: ['Рекламация', 'Поставщик', 'Единица', 'Причина', 'Создана', 'Статус'], accepted: ['Номер имущества', 'VIN', 'Наименование', 'Поставщик', 'Дата приёмки', 'Результат'] }
+        };
+        return byRole[state.role][section];
+      }
+
+      function renderDashboard() {
+        const data = {
+          supplier: {
+            title: 'Рабочий стол поставщика', lead: 'Приоритеты ООО «Трансмаш» на сегодня.',
+            kpis: [['Запросы без ответа', '2', 'один — сегодня', 'inbox'], ['Черновики КП', '2', 'нужно дополнить', 'file-pen-line'], ['Готово к приёмке', '3', 'по двум договорам', 'clipboard-check'], ['Новые рекламации', '1', 'требует реакции', 'triangle-alert']],
+            tasks: [['danger', 'triangle-alert', 'Разобрать рекламацию РК-2026-019', 'BUS-002 · поступила сегодня', 'claims'], ['warn', 'clock-3', 'Ответить на ЗКП-2026-041', 'срок ответа сегодня до 18:00', 'requests'], ['', 'clipboard-check', 'Назначить приёмку BUS-003', 'единица готова на складе', 'acceptance']],
+            schedule: [['Сегодня', 'Ответ по ЗКП-2026-041', '5 автобусов + 3 полуавтобуса'], ['14 ноя', 'Приёмка двух автобусов', 'г. Тула, Промышленная, 18'], ['20 ноя', 'Плановая готовность BUS-004', 'договор ДП-77/26']]
+          },
+          manager: {
+            title: 'Рабочий стол менеджера', lead: 'Закупки и договоры, которые требуют внимания.',
+            kpis: [['Активные запросы', '8', '3 ответа получено', 'file-plus-2'], ['КП на решении', '3', 'одно просрочено', 'file-check-2'], ['Договоры в работе', '11', '37 единиц', 'package-check'], ['Открытые рекламации', '2', 'нужно решение', 'triangle-alert']],
+            tasks: [['danger', 'triangle-alert', 'Выбрать решение по РК-2026-019', 'BUS-002 · ООО «Трансмаш»', 'claims'], ['warn', 'file-check-2', 'Рассмотреть КП-2026-184', '7 из 8 единиц предложено', 'offers'], ['', 'truck', 'Подтвердить доставку ДП-69/26', '12 автомобилей переданы клиенту', 'shipments']],
+            schedule: [['Сегодня', 'Решение по КП-2026-184', '156,4 млн ₽'], ['14 ноя', 'Приёмка ДП-77/26', '2 автобуса готовы'], ['18 ноя', 'Контрольная дата ДП-74/26', '4 машины уборочные']]
+          },
+          receiver: {
+            title: 'Рабочий стол приёмщика', lead: 'График выездов и имущество, готовое к технической приёмке.',
+            kpis: [['Ближайшие выезды', '3', 'на семь дней', 'calendar-check-2'], ['Готово к приёмке', '8', 'у трёх поставщиков', 'clipboard-check'], ['Открытые рекламации', '2', 'одна повторная', 'triangle-alert'], ['Принято в месяце', '14', 'карточек имущества', 'badge-check']],
+            tasks: [['warn', 'map-pin', 'Подтвердить выезд 14 ноября', 'ООО «Трансмаш» · г. Тула', 'acceptance'], ['danger', 'triangle-alert', 'Дополнить РК-2026-019', 'нужно приложить чек-лист', 'claims'], ['', 'calendar-days', 'Спланировать приёмку ДП-74/26', 'готовность 18 ноября', 'orders']],
+            schedule: [['14 ноя', 'ООО «Трансмаш»', 'г. Тула · BUS-001, BUS-002'], ['18 ноя', 'ООО «СпецАвто»', 'г. Москва · 4 машины'], ['22 ноя', 'АО «Автоцентр»', 'г. Химки · 2 автомобиля']]
+          }
+        }[state.role];
+        const kpisHtml = data.kpis.map(item => `<div class="sp-dashboard-kpi"><div class="sp-dashboard-kpi-top"><span>${item[0]}</span><i data-lucide="${item[3]}" aria-hidden="true"></i></div><div class="sp-dashboard-kpi-value">${item[1]}</div><div class="sp-dashboard-kpi-note">${item[2]}</div></div>`).join('');
+        const tasksHtml = data.tasks.map(item => `<div class="sp-priority-item"><div class="sp-priority-icon ${item[0]}"><i data-lucide="${item[1]}" aria-hidden="true"></i></div><div><div class="sp-priority-title">${item[2]}</div><div class="sp-priority-sub">${item[3]}</div></div><button class="sp-btn soft cursor-interaction" type="button" data-nav-section="${item[4]}">Открыть</button></div>`).join('');
+        const scheduleHtml = data.schedule.map(item => `<div class="sp-schedule-row"><div class="sp-schedule-time">${item[0]}</div><div><div class="sp-schedule-title">${item[1]}</div><div class="sp-schedule-sub">${item[2]}</div></div></div>`).join('');
+        return `<div class="sp-dashboard-layout"><div class="sp-dashboard-main"><div class="sp-dashboard-kpis">${kpisHtml}</div>${panel('Что требует внимания', 'Задачи расположены по приоритету', status('Сегодня'), `<div class="sp-priority-list">${tasksHtml}</div>`)}</div>${panel(state.role === 'receiver' ? 'План выездов' : 'Ближайшие события', 'Контрольные даты и действия', '', `<div class="sp-schedule-list">${scheduleHtml}</div>`)}</div>`;
+      }
+
+      function renderCatalog() {
+        const receiverView = state.role === 'receiver';
+        const title = receiverView ? 'Справочный каталог техники' : state.role === 'supplier' ? 'Каталог ООО «Трансмаш»' : 'Каталог поставщиков';
+        const sub = receiverView ? 'Комплектации, особенности моделей и комментарии технических приёмщиков' : 'Модели, которые поставщик производит или может поставить';
+        const products = [
+          ['city', '', 'ТМ-Город 45', 'ООО «Трансмаш»', '24,8 млн ₽', '45 мест', 'дизель', '2 на складе'],
+          ['compact', 'compact', 'ТМ-Полу 20', 'ООО «Трансмаш»', '16,2 млн ₽', '20 мест', 'дизель', 'под заказ'],
+          ['electric', 'electric', 'ТМ-Электро 70', 'ООО «Трансмаш»', 'от 31,5 млн ₽', '70 мест', 'электро', '90 дней']
+        ];
+        const cards = products.map(item => `<article class="sp-product-card"><div class="sp-product-photo ${item[1]}" role="img" aria-label="Изображение автобуса ${item[2]}"><i data-lucide="bus-front" aria-hidden="true"></i></div><div class="sp-product-body"><div><div class="sp-product-name">${item[2]}</div><div class="sp-product-sub">${item[3]}</div></div><div class="sp-product-price">${item[4]}</div><div class="sp-product-meta"><span class="sp-product-tag">${item[5]}</span><span class="sp-product-tag">${item[6]}</span><span class="sp-product-tag">${item[7]}</span></div><button class="sp-btn primary cursor-interaction" type="button" data-open-product="${item[0]}">${receiverView ? 'Характеристики и отзывы' : 'Подробнее'}</button></div></article>`).join('');
+        const supplierAction = state.role === 'supplier' ? '<button class="sp-btn primary" type="button"><i data-lucide="plus" aria-hidden="true"></i> Добавить модель</button>' : '';
+        return workspace(panel(title, sub, status(receiverView ? 'Только просмотр' : '12 моделей'), `<div class="sp-register-toolbar"><label class="sp-register-search"><i data-lucide="search" aria-hidden="true"></i><input type="search" placeholder="Найти модель, поставщика или комплектацию" aria-label="Поиск по каталогу"></label><select class="sp-register-select" aria-label="Тип техники"><option>Все типы</option><option>Автобусы</option><option>Электробусы</option></select>${supplierAction}</div><div class="sp-product-grid">${cards}</div>`), side(state.role, receiverView ? 'Открыть карточку модели и изучить комплектацию и опыт приёмки.' : state.role === 'supplier' ? 'Поддерживать карточки моделей, цены и наличие.' : 'Выбрать модель, изучить характеристики и добавить её в запрос КП.', receiverView ? 'Приёмщик видит цену справочно и может оставить комментарий к модели.' : 'Цена и наличие уточняются в коммерческом предложении.'));
+      }
+
+      function renderProductCard() {
+        const products = {
+          city: ['ТМ-Город 45', '24,8 млн ₽', 'Городской автобус большого класса', '45 сидячих / 85 общая вместимость', 'Дизель Евро-5', '12 м', '2 единицы на складе'],
+          compact: ['ТМ-Полу 20', '16,2 млн ₽', 'Манёвренный полуавтобус', '20 сидячих / 32 общая вместимость', 'Дизель Евро-5', '7,8 м', 'Производство под заказ'],
+          electric: ['ТМ-Электро 70', 'от 31,5 млн ₽', 'Низкопольный электробус', '36 сидячих / 70 общая вместимость', 'Электропривод 240 кВт', '12 м', 'Срок готовности 90 дней']
+        };
+        const p = products[state.product] || products.city;
+        const roleAction = state.role === 'manager' ? '<button class="sp-btn primary cursor-interaction" type="button" data-product-to-request>Добавить в запрос КП</button>' : state.role === 'supplier' ? '<button class="sp-btn primary" type="button">Редактировать карточку модели</button>' : '<button class="sp-btn primary" type="button">Добавить комментарий приёмщика</button>';
+        const actionHint = state.role === 'manager' ? 'Проверить модель, цену и характеристики до добавления в запрос.' : state.role === 'supplier' ? 'Проверить цену, характеристики и актуальное наличие.' : 'Изучить комплектацию и опыт предыдущих приёмок.';
+        return workspace(panel(p[0], `${p[2]} · ООО «Трансмаш»`, status(p[6], state.product === 'city' ? 'success' : 'warn'), `<div class="sp-product-hero"><div class="sp-product-photo ${state.product === 'electric' ? 'electric' : state.product === 'compact' ? 'compact' : ''}" role="img" aria-label="Изображение автобуса ${p[0]}"><i data-lucide="bus-front" aria-hidden="true"></i></div><div><div class="sp-product-price">${p[1]}</div><div class="sp-product-sub" style="margin-top:5px">Цена за одну единицу, включая базовую комплектацию</div><div class="sp-section-title">Основные характеристики</div><div class="sp-info-grid"><div class="sp-info-item"><div class="sp-info-label">Вместимость</div><div class="sp-info-value">${p[3]}</div></div><div class="sp-info-item"><div class="sp-info-label">Силовая установка</div><div class="sp-info-value">${p[4]}</div></div><div class="sp-info-item"><div class="sp-info-label">Длина</div><div class="sp-info-value">${p[5]}</div></div><div class="sp-info-item"><div class="sp-info-label">Гарантия</div><div class="sp-info-value">24 месяца или 100 000 км</div></div></div><div class="sp-btn-row">${roleAction}<button class="sp-btn" type="button">Скачать спецификацию</button></div></div></div><div class="sp-section-title">Комплектация</div><div class="sp-checklist"><div class="sp-check"><span class="sp-check-mark">✓</span><span>Кондиционирование салона и отдельный обогрев водительского места</span></div><div class="sp-check"><span class="sp-check-mark">✓</span><span>Система видеонаблюдения, ГЛОНАСС и оборудование для безналичной оплаты</span></div><div class="sp-check"><span class="sp-check-mark">✓</span><span>Доступная среда: аппарель, место для коляски и кнопки вызова</span></div></div>${state.role === 'receiver' ? '<div class="sp-note" style="margin-top:14px"><strong>Комментарий приёмщиков:</strong> при холодном запуске дополнительно проверять работу отопителя салона.</div>' : ''}`), side(state.role, actionHint, state.role === 'manager' ? 'После добавления менеджер сможет изменить количество и специальные требования.' : 'Карточка модели сохраняет характеристики, цену и историю комментариев.'));
+      }
+
+      function renderAssetCard() {
+        return workspace(panel('Карточка имущества АВТ-000341', 'Автобус BUS-001 · принят 12.11.2026', status('Принят', 'success'), `<div class="sp-kpis">${kpi('VIN', 'XTA…0001')}${kpi('Договор', 'ДП-77/26')}${kpi('Приёмщик', 'Сергей Волков')}</div><div class="sp-info-grid"><div class="sp-info-item"><div class="sp-info-label">Модель и комплектация</div><div class="sp-info-value">ТМ-Город 45 · синий · 45 мест · дизель</div></div><div class="sp-info-item"><div class="sp-info-label">Поставщик</div><div class="sp-info-value">ООО «Трансмаш»</div></div><div class="sp-info-item"><div class="sp-info-label">Место приёмки</div><div class="sp-info-value">г. Тула, ул. Промышленная, д. 18</div></div><div class="sp-info-item"><div class="sp-info-label">Акт приёмки</div><div class="sp-info-value">ПР-2026-118 от 12.11.2026</div></div></div><div class="sp-section-title">Что отметил приёмщик</div><div class="sp-checklist"><div class="sp-check"><span class="sp-check-mark">✓</span><span>Кузов, лакокрасочное покрытие и маркировка без замечаний</span></div><div class="sp-check"><span class="sp-check-mark">✓</span><span>Комплектность, документация и запасные принадлежности подтверждены</span></div><div class="sp-check"><span class="sp-check-mark">✓</span><span>Двигатель, тормозная система, двери и отопитель проверены</span></div></div><div class="sp-section-title">Фото и видео приёмки</div><div class="sp-media-grid"><div class="sp-media-item"><i data-lucide="image" aria-hidden="true"></i><div class="sp-media-title">Общий вид</div><div class="sp-media-sub">IMG_1181.jpg · 12.11</div></div><div class="sp-media-item"><i data-lucide="image" aria-hidden="true"></i><div class="sp-media-title">VIN и маркировка</div><div class="sp-media-sub">IMG_1184.jpg · 12.11</div></div><div class="sp-media-item"><i data-lucide="image" aria-hidden="true"></i><div class="sp-media-title">Салон</div><div class="sp-media-sub">IMG_1192.jpg · 12.11</div></div><div class="sp-media-item"><i data-lucide="play-circle" aria-hidden="true"></i><div class="sp-media-title">Видео проверки</div><div class="sp-media-sub">VID_031.mp4 · 02:14</div></div></div>${state.role === 'receiver' ? '<div class="sp-btn-row"><button class="sp-btn danger cursor-interaction" type="button" data-add-claim>Добавить рекламацию</button></div>' : ''}`), side(state.role, 'Изучить результат приёмки и приложенные материалы.', 'Фото, видео и чек-лист хранятся в карточке принятой единицы.'));
+      }
+
+      function renderRegistry(section) {
+        const meta = getRegistryMeta(section);
+        const columns = registryColumns(section);
+        const rows = registryRows(section);
+        const createAction = state.role === 'manager' && section === 'requests' ? '<button class="sp-btn primary cursor-interaction" type="button" data-create-request><i data-lucide="plus" aria-hidden="true"></i> Создать запрос КП</button>' : state.role === 'manager' && section === 'orders' ? '<button class="sp-btn primary cursor-interaction" type="button" data-add-contract><i data-lucide="plus" aria-hidden="true"></i> Добавить договор</button>' : state.role === 'supplier' && section === 'offers' ? '<button class="sp-btn primary cursor-interaction" type="button" data-create-offer><i data-lucide="plus" aria-hidden="true"></i> Добавить КП</button>' : state.role === 'receiver' && section === 'claims' ? '<button class="sp-btn primary cursor-interaction" type="button" data-add-claim><i data-lucide="plus" aria-hidden="true"></i> Добавить рекламацию</button>' : '';
+        const body = `
+          ${createAction ? `<div class="sp-register-actions">${createAction}</div>` : ''}
+          <div class="sp-register-toolbar">
+            <label class="sp-register-search"><i data-lucide="search" aria-hidden="true"></i><input type="search" aria-label="Поиск по реестру" placeholder="Поиск по номеру, объекту или поставщику"></label>
+            <select class="sp-register-select" aria-label="Фильтр по статусу"><option>Все статусы</option><option>Требуют действия</option><option>В работе</option><option>Завершённые</option></select>
+            <button class="sp-btn" type="button">Ещё фильтры</button>
+          </div>
+          <div class="sp-table-wrap"><table class="sp-table"><thead><tr>${columns.map(column => `<th>${column}</th>`).join('')}<th></th></tr></thead><tbody>
+            ${rows.map(row => {
+              const openStep = row[row.length - 1];
+              const cells = row.slice(0, -1);
+              const targetAttr = openStep === 'asset' ? 'data-open-asset' : `data-open-step="${openStep}"`;
+              return `<tr>${cells.map((cell, index) => `<td>${index === 0 && openStep !== null ? `<button class="sp-object-button cursor-interaction" type="button" ${targetAttr}>${cell}</button>` : cell}</td>`).join('')}<td>${openStep !== null ? `<button class="sp-btn soft cursor-interaction" type="button" ${targetAttr}>Открыть карточку</button>` : ''}</td></tr>`;
+            }).join('')}
+          </tbody></table></div>
+          <div class="sp-register-foot"><span>Показано ${rows.length} из ${meta.count}</span><div class="sp-pagination"><button class="sp-page-button" type="button" aria-current="page">1</button><button class="sp-page-button" type="button">2</button><button class="sp-page-button" type="button">3</button></div></div>`;
+        return workspace(
+          panel(meta.title, 'Обновлено сегодня в 12:40', status(meta.count), body),
+          side(state.role, 'Найти объект в реестре и открыть его карточку.', 'Статусы и счётчики обновляются автоматически при изменениях в карточках.')
+        );
+      }
+
+      function renderNav() {
+        const currentSection = state.view === 'process' ? (state.section || steps[state.step].section) : state.section;
+        root.querySelector('#sp-nav').innerHTML = navByRole[state.role].map(([icon, label, section, step]) => `
+          <button class="sp-nav-button cursor-interaction" type="button" data-nav-section="${section}" data-nav-step="${step}" aria-current="${currentSection === section ? 'page' : 'false'}">
+            <i data-lucide="${icon}" aria-hidden="true"></i><span>${label}</span>${section === 'claims' ? '<span class="sp-nav-badge">1</span>' : ''}
+          </button>`).join('');
+      }
+
+      function renderSteps() {
+        root.querySelector('#sp-steps').innerHTML = steps.map((step, index) => `
+          <button class="sp-step cursor-interaction ${index < state.step ? 'is-done' : ''} ${index === state.step ? 'is-active' : ''}" type="button" data-step="${index}" aria-label="Шаг ${index + 1}: ${step.title}" aria-current="${index === state.step ? 'step' : 'false'}">
+            <span class="sp-step-number">${index < state.step ? '✓' : index + 1}</span><span class="sp-step-label">${step.short}</span>
+          </button>`).join('');
+      }
+
+      function renderDrawer() {
+        const drawer = root.querySelector('#sp-drawer');
+        if (!state.drawer) { drawer.hidden = true; drawer.innerHTML = ''; return; }
+        drawer.hidden = false;
+        drawer.innerHTML = state.drawer === 'notifications' ? `
+          <div class="sp-drawer-item"><strong>BUS-002: новая рекламация</strong>Менеджеру назначена задача · email отправлен</div>
+          <div class="sp-drawer-item"><strong>2 единицы готовы к приёмке</strong>Приёмщик приглашён на площадку поставщика</div>
+          <div class="sp-drawer-item"><strong>КП № 184 получено</strong>Нужно решение менеджера по семи единицам</div>` : `
+          <div class="sp-drawer-item"><strong>Мария → Алексей</strong>Подтвердите, что BUS-003 будет на складе к 20 декабря.</div>
+          <div class="sp-drawer-item"><strong>Сергей → участники заказа</strong>BUS-002 отклонён. Фото дефекта приложено к акту.</div>
+          <div class="sp-drawer-item"><strong>Система</strong>Новые сообщения продублированы адресатам по email.</div>`;
+      }
+
+      function refreshIcons() {
+        if (globalThis.lucide && typeof globalThis.lucide.createIcons === 'function') {
+          globalThis.lucide.createIcons({ attrs: { width: 18, height: 18 } });
+        }
+      }
+
+      function render() {
+        const step = steps[state.step];
+        if (state.view === 'process') state.role = step.role;
+        const role = roles[state.role];
+        root.querySelectorAll('.sp-role-button').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.role === state.role)));
+        root.querySelector('#sp-avatar').textContent = role.initials;
+        root.querySelector('#sp-account-name').textContent = role.name;
+        root.querySelector('#sp-account-org').textContent = role.org;
+        const processOnly = [root.querySelector('#sp-scenario-chip'), root.querySelector('#sp-process-progress'), root.querySelector('#sp-process-footer')];
+        processOnly.forEach(element => element.classList.toggle('is-hidden', state.view !== 'process'));
+        root.querySelector('#sp-back-registry').classList.toggle('is-hidden', !['process', 'product', 'asset'].includes(state.view));
+        if (state.view === 'registry') {
+          const meta = getRegistryMeta(state.section);
+          root.querySelector('#sp-role-caption').textContent = `Роль: ${role.label} · раздел реестров`;
+          root.querySelector('#sp-page-title').textContent = meta.title;
+          root.querySelector('#sp-page-lead').textContent = meta.lead;
+          root.querySelector('#sp-screen').innerHTML = renderRegistry(state.section);
+        } else if (state.view === 'dashboard') {
+          const titles = { manager: ['Рабочий стол менеджера', 'Закупки и договоры, которые требуют внимания.'], supplier: ['Рабочий стол поставщика', 'Приоритеты ООО «Трансмаш» на сегодня.'], receiver: ['Рабочий стол приёмщика', 'График выездов и имущество, готовое к технической приёмке.'] };
+          root.querySelector('#sp-role-caption').textContent = `Роль: ${role.label} · стартовая страница`;
+          root.querySelector('#sp-page-title').textContent = titles[state.role][0];
+          root.querySelector('#sp-page-lead').textContent = titles[state.role][1];
+          root.querySelector('#sp-screen').innerHTML = renderDashboard();
+        } else if (state.view === 'catalog') {
+          const titles = state.role === 'receiver' ? ['Справочный каталог техники', 'Комплектации и опыт приёмки разных моделей.'] : state.role === 'supplier' ? ['Каталог ООО «Трансмаш»', 'Все производимые модели и их доступность.'] : ['Каталог поставщиков', 'Модели, доступные для формирования запросов КП.'];
+          root.querySelector('#sp-role-caption').textContent = `Роль: ${role.label} · каталог`;
+          root.querySelector('#sp-page-title').textContent = titles[0];
+          root.querySelector('#sp-page-lead').textContent = titles[1];
+          root.querySelector('#sp-screen').innerHTML = renderCatalog();
+        } else if (state.view === 'product') {
+          root.querySelector('#sp-role-caption').textContent = `Роль: ${role.label} · карточка модели`;
+          root.querySelector('#sp-page-title').textContent = 'Подробные характеристики автобуса';
+          root.querySelector('#sp-page-lead').textContent = 'Цена, наличие, комплектация и параметры модели из каталога поставщика.';
+          root.querySelector('#sp-screen').innerHTML = renderProductCard();
+        } else if (state.view === 'asset') {
+          root.querySelector('#sp-role-caption').textContent = `Роль: ${role.label} · карточка имущества`;
+          root.querySelector('#sp-page-title').textContent = 'Результат технической приёмки';
+          root.querySelector('#sp-page-lead').textContent = 'Реквизиты, отметки приёмщика и приложенные фото и видео.';
+          root.querySelector('#sp-screen').innerHTML = renderAssetCard();
+        } else {
+          root.querySelector('#sp-role-caption').textContent = `Роль: ${role.label} · шаг ${state.step + 1} из ${steps.length}`;
+          root.querySelector('#sp-page-title').textContent = step.title;
+          root.querySelector('#sp-page-lead').textContent = step.lead;
+          root.querySelector('#sp-progress-label').textContent = `${Math.round(((state.step + 1) / steps.length) * 100)}% сценария`;
+          root.querySelector('#sp-screen').innerHTML = screens[state.step]();
+          root.querySelector('#sp-prev').disabled = state.step === 0;
+          root.querySelector('#sp-next').disabled = state.step === steps.length - 1;
+          renderSteps();
+        }
+        renderNav();
+        renderDrawer();
+        refreshIcons();
+      }
+
+      root.addEventListener('click', event => {
+        const roleButton = event.target.closest('[data-role]');
+        const stepButton = event.target.closest('[data-step]');
+        const navButton = event.target.closest('[data-nav-section]');
+        const openButton = event.target.closest('[data-open-step]');
+        const drawerButton = event.target.closest('[data-drawer]');
+        const resolutionButton = event.target.closest('[data-resolution]');
+        const requestSourceButton = event.target.closest('[data-request-source]');
+        const offerSourceButton = event.target.closest('[data-offer-source]');
+        const createRequestButton = event.target.closest('[data-create-request]');
+        const createOfferButton = event.target.closest('[data-create-offer]');
+        const addContractButton = event.target.closest('[data-add-contract]');
+        const addClaimButton = event.target.closest('[data-add-claim]');
+        const productButton = event.target.closest('[data-open-product]');
+        const productToRequestButton = event.target.closest('[data-product-to-request]');
+        const assetButton = event.target.closest('[data-open-asset]');
+        const backRegistryButton = event.target.closest('#sp-back-registry');
+        if (roleButton) { state.role = roleButton.dataset.role; state.view = 'dashboard'; state.section = 'dashboard'; state.drawer = null; render(); }
+        if (stepButton) { state.step = Number(stepButton.dataset.step); state.section = steps[state.step].section; state.view = 'process'; state.drawer = null; render(); }
+        if (navButton) {
+          const section = navButton.dataset.navSection;
+          state.drawer = null;
+          state.section = section;
+          if (section === 'dashboard') state.view = 'dashboard';
+          else if (section === 'catalog') state.view = 'catalog';
+          else state.view = 'registry';
+          render();
+        }
+        if (openButton) { state.step = Number(openButton.dataset.openStep); state.creatingRequest = false; state.creatingOffer = false; state.creatingContract = false; state.creatingClaim = false; state.view = 'process'; state.drawer = null; render(); }
+        if (drawerButton) { state.drawer = state.drawer === drawerButton.dataset.drawer ? null : drawerButton.dataset.drawer; renderDrawer(); }
+        if (resolutionButton) { state.resolution = resolutionButton.dataset.resolution; render(); }
+        if (requestSourceButton) { state.requestSource = requestSourceButton.dataset.requestSource; render(); }
+        if (offerSourceButton) { state.offerSource = offerSourceButton.dataset.offerSource; render(); }
+        if (createRequestButton) { state.step = 1; state.section = 'requests'; state.requestSource = 'manual'; state.creatingRequest = true; state.view = 'process'; state.drawer = null; render(); }
+        if (createOfferButton) { state.step = 2; state.section = 'offers'; state.offerSource = 'request'; state.creatingOffer = true; state.view = 'process'; state.drawer = null; render(); }
+        if (addContractButton) { state.step = 4; state.section = 'orders'; state.creatingContract = true; state.view = 'process'; state.drawer = null; render(); }
+        if (addClaimButton) { state.role = 'receiver'; state.step = 7; state.section = 'claims'; state.creatingClaim = true; state.view = 'process'; state.drawer = null; render(); }
+        if (productButton) { state.product = productButton.dataset.openProduct; state.section = 'catalog'; state.view = 'product'; state.drawer = null; render(); }
+        if (productToRequestButton) { state.step = 1; state.section = 'requests'; state.requestSource = 'catalog'; state.creatingRequest = true; state.view = 'process'; state.drawer = null; render(); }
+        if (assetButton) { state.view = 'asset'; state.drawer = null; render(); }
+        if (backRegistryButton) { state.view = state.section === 'catalog' ? 'catalog' : 'registry'; state.creatingRequest = false; state.creatingOffer = false; state.creatingContract = false; state.creatingClaim = false; state.drawer = null; render(); }
+      });
+      root.querySelector('#sp-prev').addEventListener('click', () => { if (state.step > 0) { state.step -= 1; state.section = steps[state.step].section; state.view = 'process'; state.drawer = null; render(); } });
+      root.querySelector('#sp-next').addEventListener('click', () => { if (state.step < steps.length - 1) { state.step += 1; state.section = steps[state.step].section; state.view = 'process'; state.drawer = null; render(); } });
+
+      render();
+    })();
+  </script>
+</div>

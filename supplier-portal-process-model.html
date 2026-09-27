@@ -1,0 +1,286 @@
+<div id="supplier-process-model">
+  <style>
+    #supplier-process-model { color: var(--foreground); }
+    #supplier-process-model .model-intro { margin-bottom: 16px; }
+    #supplier-process-model .diagram-scroll { overflow-x: auto; padding: 8px 0 14px; }
+    #supplier-process-model .bpmn { display: block; min-width: 940px; width: 100%; height: auto; }
+    #supplier-process-model .lane { fill: color-mix(in srgb, var(--muted) 36%, transparent); stroke: var(--border); stroke-width: 1; }
+    #supplier-process-model .lane-head { fill: color-mix(in srgb, var(--accent) 58%, transparent); stroke: var(--border); stroke-width: 1; }
+    #supplier-process-model .task { fill: var(--card); stroke: var(--border); stroke-width: 1.4; rx: 9; }
+    #supplier-process-model .service { fill: color-mix(in srgb, var(--viz-series-1) 13%, var(--card)); stroke: var(--viz-series-1); stroke-width: 1.4; rx: 9; }
+    #supplier-process-model .decision { fill: color-mix(in srgb, var(--viz-series-2) 15%, var(--card)); stroke: var(--viz-series-2); stroke-width: 1.4; }
+    #supplier-process-model .exception { fill: color-mix(in srgb, var(--destructive) 10%, var(--card)); stroke: var(--destructive); stroke-width: 1.4; rx: 9; }
+    #supplier-process-model .event { fill: var(--background); stroke: var(--foreground); stroke-width: 2; }
+    #supplier-process-model .end-event { fill: var(--foreground); stroke: var(--foreground); stroke-width: 2; }
+    #supplier-process-model .flow { fill: none; stroke: var(--foreground); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-main); }
+    #supplier-process-model .branch { fill: none; stroke: var(--muted-foreground); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-branch); }
+    #supplier-process-model .loop { fill: none; stroke: var(--viz-series-2); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 6 4; marker-end: url(#arrow-loop); }
+    #supplier-process-model .message { fill: none; stroke: var(--viz-series-1); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 4 4; marker-end: url(#arrow-message); }
+    #supplier-process-model .svg-label { color: var(--foreground); font: 500 13px/1.22 system-ui, sans-serif; text-align: center; }
+    #supplier-process-model .svg-small { color: var(--muted-foreground); font: 400 11px/1.18 system-ui, sans-serif; text-align: center; }
+    #supplier-process-model .lane-title { fill: var(--foreground); font: 500 14px system-ui, sans-serif; text-anchor: middle; }
+    #supplier-process-model .edge-label { fill: var(--muted-foreground); font: 500 11px system-ui, sans-serif; }
+    #supplier-process-model .legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 8px 0 0; color: var(--muted-foreground); }
+    #supplier-process-model .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    #supplier-process-model .legend-mark { width: 18px; height: 12px; border: 1px solid var(--border); border-radius: 4px; background: var(--card); }
+    #supplier-process-model .legend-mark.system { background: color-mix(in srgb, var(--viz-series-1) 13%, var(--card)); border-color: var(--viz-series-1); }
+    #supplier-process-model .legend-mark.gateway { transform: rotate(45deg); width: 12px; height: 12px; border-radius: 0; background: color-mix(in srgb, var(--viz-series-2) 15%, var(--card)); border-color: var(--viz-series-2); }
+    #supplier-process-model .state-block { margin-top: 18px; }
+    #supplier-process-model .state-title { margin: 0 0 8px; }
+    #supplier-process-model .state-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    #supplier-process-model .state { padding: 8px 10px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; }
+    #supplier-process-model .state.system { border-color: var(--viz-series-1); }
+    #supplier-process-model .state.issue { border-color: var(--destructive); }
+    #supplier-process-model .state-arrow { color: var(--muted-foreground); }
+    #supplier-process-model .role-grid { margin-top: 16px; }
+    #supplier-process-model .role-grid .card { min-height: 170px; }
+    #supplier-process-model .role-grid h3 { margin-top: 0; }
+    #supplier-process-model .role-grid ul { margin-bottom: 0; padding-left: 18px; }
+    #supplier-process-model .control-table th:first-child { width: 24%; }
+    #supplier-process-model .control-table th:nth-child(2) { width: 38%; }
+    #supplier-process-model .note { color: var(--muted-foreground); margin-top: 10px; }
+  </style>
+
+  <div class="model-intro">
+    <h2>Модель личного кабинета поставщика</h2>
+    <p class="subtitle">Черновик для согласования: роли, статусы, сквозной процесс и обязательные проверки.</p>
+  </div>
+
+  <div class="nav nav-pills nav-justified" role="tablist" aria-label="Разделы модели">
+    <button class="nav-link active" id="bpmn-tab" role="tab" aria-controls="bpmn-panel" aria-selected="true" type="button">BPMN процесса</button>
+    <button class="nav-link" id="status-tab" role="tab" aria-controls="status-panel" aria-selected="false" type="button">Статусы и объекты</button>
+    <button class="nav-link" id="roles-tab" role="tab" aria-controls="roles-panel" aria-selected="false" type="button">Роли и контроль</button>
+  </div>
+
+  <div id="bpmn-panel" role="tabpanel" aria-labelledby="bpmn-tab">
+    <div class="diagram-scroll">
+      <svg class="bpmn" viewBox="0 0 1120 1990" role="img" aria-labelledby="bpmn-title bpmn-desc">
+        <title id="bpmn-title">BPMN процесса управления заказом на поставку</title>
+        <desc id="bpmn-desc">Четыре дорожки: менеджер, поставщик, технический приёмщик и система. Процесс начинается с запроса КП и заканчивается закрытием договора после исполнения обязательств по всем единицам.</desc>
+        <defs>
+          <marker id="arrow-main" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--foreground)"/></marker>
+          <marker id="arrow-branch" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--muted-foreground)"/></marker>
+          <marker id="arrow-loop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--viz-series-2)"/></marker>
+          <marker id="arrow-message" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--viz-series-1)"/></marker>
+        </defs>
+
+        <rect class="lane-head" x="20" y="20" width="270" height="48"/><rect class="lane" x="20" y="68" width="270" height="1880"/>
+        <rect class="lane-head" x="290" y="20" width="270" height="48"/><rect class="lane" x="290" y="68" width="270" height="1880"/>
+        <rect class="lane-head" x="560" y="20" width="270" height="48"/><rect class="lane" x="560" y="68" width="270" height="1880"/>
+        <rect class="lane-head" x="830" y="20" width="270" height="48"/><rect class="lane" x="830" y="68" width="270" height="1880"/>
+        <text class="lane-title" x="155" y="50">Менеджер</text>
+        <text class="lane-title" x="425" y="50">Поставщик</text>
+        <text class="lane-title" x="695" y="50">Технический приёмщик</text>
+        <text class="lane-title" x="965" y="50">Система</text>
+
+        <circle class="event" cx="155" cy="105" r="17"/>
+        <path class="flow" d="M155 122 V145"/>
+        <rect class="task" x="65" y="145" width="180" height="64"/>
+        <foreignObject x="75" y="158" width="160" height="42"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Создать запрос КП<br/><span class="svg-small">из каталога или свободно</span></div></foreignObject>
+
+        <path class="message" d="M245 177 H865"/>
+        <rect class="service" x="865" y="145" width="200" height="64"/>
+        <foreignObject x="875" y="158" width="180" height="42"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Создать единицы и уведомить поставщика</div></foreignObject>
+        <path class="flow" d="M965 209 V245 H425 V260"/>
+
+        <rect class="task" x="325" y="260" width="200" height="72"/>
+        <foreignObject x="335" y="274" width="180" height="48"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Решение по каждой единице<br/><span class="svg-small">принять или отклонить</span></div></foreignObject>
+        <path class="flow" d="M425 332 V360"/>
+        <rect class="task" x="325" y="360" width="200" height="72"/>
+        <foreignObject x="335" y="374" width="180" height="48"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Сформировать одно КП<br/><span class="svg-small">условия могут различаться по единицам</span></div></foreignObject>
+        <path class="message" d="M325 396 H275 V496 H245"/>
+        <rect class="task" x="65" y="460" width="180" height="72"/>
+        <foreignObject x="75" y="474" width="160" height="48"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Решение по каждой единице КП</div></foreignObject>
+        <path class="flow" d="M155 532 V565"/>
+
+        <polygon class="decision" points="155,565 200,610 155,655 110,610"/>
+        <foreignObject x="120" y="588" width="70" height="45"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-small">Есть возврат<br/>на доработку?</div></foreignObject>
+        <path class="loop" d="M200 610 H425 V545"/>
+        <text class="edge-label" x="275" y="600">да</text>
+        <rect class="task" x="325" y="480" width="200" height="64"/>
+        <foreignObject x="335" y="493" width="180" height="40"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Исправить возвращённые единицы КП</div></foreignObject>
+        <path class="loop" d="M325 512 H245"/>
+        <path class="flow" d="M155 655 V690"/>
+        <text class="edge-label" x="166" y="677">нет</text>
+
+        <polygon class="decision" points="155,690 200,735 155,780 110,735"/>
+        <foreignObject x="120" y="713" width="70" height="45"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-small">Есть согласованные единицы?</div></foreignObject>
+        <path class="branch" d="M110 735 H65 V815"/>
+        <text class="edge-label" x="70" y="724">нет</text>
+        <circle class="event" cx="65" cy="842" r="19"/><circle class="event" cx="65" cy="842" r="14"/>
+        <text class="edge-label" x="90" y="846">Завершить без договора</text>
+        <path class="flow" d="M155 780 V815"/>
+        <text class="edge-label" x="166" y="802">да</text>
+
+        <rect class="task" x="55" y="815" width="200" height="76"/>
+        <foreignObject x="65" y="828" width="180" height="52"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Зарегистрировать договор<br/><span class="svg-small">даты и доставка по каждой единице</span></div></foreignObject>
+        <path class="message" d="M255 853 H855"/>
+        <rect class="service" x="855" y="815" width="220" height="76"/>
+        <foreignObject x="865" y="828" width="200" height="52"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Создать неизменяемую версию заказа v1</div></foreignObject>
+        <path class="flow" d="M965 891 V925 H425 V940"/>
+
+        <polygon class="decision" points="425,940 470,985 425,1030 380,985"/>
+        <foreignObject x="390" y="963" width="70" height="45"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-small">Единица уже на складе?</div></foreignObject>
+        <path class="branch" d="M380 985 H325 V1080"/>
+        <text class="edge-label" x="332" y="973">нет</text>
+        <rect class="task" x="325" y="1080" width="200" height="74"/>
+        <foreignObject x="335" y="1094" width="180" height="48"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Изготовить единицу<br/><span class="svg-small">отчёты по этапам</span></div></foreignObject>
+        <path class="flow" d="M425 1154 V1185"/>
+        <path class="branch" d="M470 985 H545 V1165 H500 V1185"/>
+        <text class="edge-label" x="480" y="973">да</text>
+        <rect class="task" x="325" y="1185" width="200" height="70"/>
+        <foreignObject x="335" y="1199" width="180" height="44"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Статус «На складе» → «Готово к приёмке»</div></foreignObject>
+        <path class="message" d="M525 1220 H855"/>
+        <rect class="service" x="855" y="1185" width="220" height="70"/>
+        <foreignObject x="865" y="1199" width="200" height="44"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Создать задачу и уведомить приёмщика</div></foreignObject>
+        <path class="flow" d="M965 1255 V1290 H695 V1305"/>
+
+        <rect class="task" x="595" y="1305" width="200" height="70"/>
+        <foreignObject x="605" y="1319" width="180" height="44"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Осмотреть единицу у поставщика</div></foreignObject>
+        <path class="flow" d="M695 1375 V1400"/>
+        <polygon class="decision" points="695,1400 740,1445 695,1490 650,1445"/>
+        <foreignObject x="660" y="1423" width="70" height="45"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-small">Единица принята?</div></foreignObject>
+
+        <path class="branch" d="M650 1445 H540 V1515"/>
+        <text class="edge-label" x="565" y="1433">нет</text>
+        <rect class="exception" x="325" y="1515" width="220" height="72"/>
+        <foreignObject x="335" y="1529" width="200" height="46"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Подпроцесс «Рекламация»<br/><span class="svg-small">решение принимает менеджер</span></div></foreignObject>
+        <path class="loop" d="M325 1551 H300 V1220 H325"/>
+        <path class="flow" d="M695 1490 V1515"/>
+        <text class="edge-label" x="706" y="1508">да</text>
+        <rect class="task" x="595" y="1515" width="200" height="72"/>
+        <foreignObject x="605" y="1529" width="180" height="46"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Зафиксировать VIN, номер и реквизиты</div></foreignObject>
+        <path class="message" d="M795 1551 H855"/>
+        <rect class="service" x="855" y="1515" width="220" height="72"/>
+        <foreignObject x="865" y="1529" width="200" height="46"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Создать карточку принятого имущества</div></foreignObject>
+        <path class="flow" d="M965 1587 V1615 H425 V1630"/>
+
+        <rect class="task" x="325" y="1630" width="200" height="64"/>
+        <foreignObject x="335" y="1643" width="180" height="40"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Отгрузить принятую единицу</div></foreignObject>
+        <path class="flow" d="M425 1694 V1715 H155 V1730"/>
+        <polygon class="decision" points="155,1730 200,1775 155,1820 110,1775"/>
+        <foreignObject x="120" y="1753" width="70" height="45"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-small">Доставка входит в условия?</div></foreignObject>
+        <text class="edge-label" x="225" y="1764">нет</text>
+        <path class="flow" d="M155 1820 V1840"/>
+        <text class="edge-label" x="166" y="1837">да</text>
+        <rect class="task" x="65" y="1840" width="180" height="60"/>
+        <foreignObject x="75" y="1852" width="160" height="38"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Подтвердить доставку клиенту</div></foreignObject>
+        <path class="branch" d="M200 1775 H965 V1840"/>
+        <path class="message" d="M245 1870 H855"/>
+        <rect class="service" x="855" y="1840" width="220" height="60"/>
+        <foreignObject x="865" y="1852" width="200" height="38"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Проверить все обязательства версии</div></foreignObject>
+        <path class="loop" d="M965 1900 V1925 H1090 V985 H470"/>
+        <text class="edge-label" x="720" y="1920">не все единицы исполнены</text>
+        <path class="flow" d="M900 1900 V1943 H245"/>
+        <text class="edge-label" x="540" y="1934">все обязательства исполнены</text>
+        <rect class="task" x="65" y="1915" width="180" height="56"/>
+        <foreignObject x="75" y="1926" width="160" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Закрыть заказ</div></foreignObject>
+        <circle class="end-event" cx="35" cy="1943" r="15"/>
+        <path class="flow" d="M65 1943 H51"/>
+      </svg>
+    </div>
+
+    <h3>Подпроцесс рекламации</h3>
+    <div class="diagram-scroll">
+      <svg class="bpmn" viewBox="0 0 1120 680" role="img" aria-label="Подпроцесс обработки рекламации">
+        <defs>
+          <marker id="claim-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--foreground)"/></marker>
+        </defs>
+        <rect class="lane-head" x="20" y="20" width="270" height="45"/><rect class="lane" x="20" y="65" width="270" height="585"/>
+        <rect class="lane-head" x="290" y="20" width="270" height="45"/><rect class="lane" x="290" y="65" width="270" height="585"/>
+        <rect class="lane-head" x="560" y="20" width="270" height="45"/><rect class="lane" x="560" y="65" width="270" height="585"/>
+        <rect class="lane-head" x="830" y="20" width="270" height="45"/><rect class="lane" x="830" y="65" width="270" height="585"/>
+        <text class="lane-title" x="155" y="48">Менеджер</text><text class="lane-title" x="425" y="48">Поставщик</text><text class="lane-title" x="695" y="48">Приёмщик</text><text class="lane-title" x="965" y="48">Система</text>
+        <rect class="exception" x="585" y="95" width="220" height="65"/><foreignObject x="595" y="108" width="200" height="40"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Зафиксировать рекламацию без создания имущества</div></foreignObject>
+        <path class="flow" d="M585 127 H275 V215 H255"/>
+        <rect class="task" x="55" y="185" width="200" height="60"/><foreignObject x="65" y="197" width="180" height="38"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Взять рекламацию в работу</div></foreignObject>
+        <path class="flow" d="M155 245 V280"/>
+        <polygon class="decision" points="155,280 200,325 155,370 110,325"/><foreignObject x="121" y="303" width="68" height="45"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-small">Выбрать решение</div></foreignObject>
+
+        <rect class="task" x="325" y="170" width="220" height="54"/><foreignObject x="335" y="181" width="200" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Устранить недостатки</div></foreignObject>
+        <rect class="task" x="325" y="309" width="220" height="54"/><foreignObject x="335" y="320" width="200" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Подготовить замену</div></foreignObject>
+        <polygon class="decision" points="695,230 725,260 695,290 665,260"/>
+        <foreignObject x="671" y="247" width="48" height="28"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-small">повтор</div></foreignObject>
+        <rect class="service" x="855" y="225" width="220" height="70"/><foreignObject x="865" y="239" width="200" height="44"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Создать новую попытку приёмки</div></foreignObject>
+
+        <rect class="task" x="585" y="380" width="220" height="60"/><foreignObject x="595" y="392" width="200" height="38"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Принять с согласованными отклонениями</div></foreignObject>
+        <rect class="service" x="855" y="380" width="220" height="60"/><foreignObject x="865" y="392" width="200" height="38"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Продолжить оформление имущества</div></foreignObject>
+
+        <rect class="task" x="45" y="455" width="220" height="60"/><foreignObject x="55" y="467" width="200" height="38"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Зарегистрировать допсоглашение</div></foreignObject>
+        <rect class="service" x="855" y="455" width="220" height="60"/><foreignObject x="865" y="467" width="200" height="38"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Создать новую версию заказа</div></foreignObject>
+
+        <rect class="exception" x="325" y="535" width="220" height="54"/><foreignObject x="335" y="546" width="200" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-label">Отказ от единицы</div></foreignObject>
+        <circle class="event" cx="575" cy="562" r="14"/><circle class="event" cx="575" cy="562" r="10"/>
+
+        <path class="branch" d="M155 280 V197 H325"/>
+        <path class="branch" d="M200 325 H275 V336 H325"/>
+        <path class="branch" d="M155 370 V410 H585"/>
+        <path class="branch" d="M110 325 H30 V485 H45"/>
+        <path class="branch" d="M200 325 H280 V562 H325"/>
+
+        <path class="loop" d="M545 197 H625 V250 H665"/>
+        <path class="loop" d="M545 336 H625 V270 H665"/>
+        <path class="flow" d="M725 260 H855"/>
+        <path class="flow" d="M805 410 H855"/>
+        <path class="flow" d="M265 485 H855"/>
+        <path class="branch" d="M545 562 H561"/>
+
+        <text class="edge-label" x="215" y="188">устранить</text>
+        <text class="edge-label" x="220" y="315">заменить</text>
+        <text class="edge-label" x="335" y="400">принять с отклонениями</text>
+        <text class="edge-label" x="36" y="445">изменить условия</text>
+        <text class="edge-label" x="285" y="550">отказ*</text>
+      </svg>
+    </div>
+    <p class="note">* Отказ не закрывает обязательство: требуется замена либо дополнительное соглашение. Повторная приёмка создаётся как новая попытка по той же договорной единице.</p>
+    <div class="legend text-small"><span><span class="legend-mark"></span> действие пользователя</span><span><span class="legend-mark system"></span> автоматическое действие</span><span><span class="legend-mark gateway"></span> решение</span></div>
+  </div>
+
+  <div id="status-panel" role="tabpanel" aria-labelledby="status-tab" hidden>
+    <div class="state-block">
+      <h3 class="state-title">Уровни данных</h3>
+      <div class="state-flow"><span class="state system">Договор</span><span class="state-arrow">→</span><span class="state system">Версия заказа v1…vN</span><span class="state-arrow">→</span><span class="state">Договорная позиция</span><span class="state-arrow">→</span><span class="state">Предполагаемая единица</span><span class="state-arrow">→</span><span class="state system">Принятое имущество с VIN</span></div>
+    </div>
+    <div class="state-block">
+      <h3 class="state-title">Жизненный цикл единицы</h3>
+      <div class="state-flow"><span class="state">В запросе КП</span><span class="state-arrow">→</span><span class="state">Включена в КП</span><span class="state-arrow">→</span><span class="state">Согласована</span><span class="state-arrow">→</span><span class="state">По договору</span><span class="state-arrow">→</span><span class="state">В производстве</span><span class="state-arrow">→</span><span class="state">Изготовлена</span><span class="state-arrow">→</span><span class="state">На складе</span><span class="state-arrow">→</span><span class="state">Готова к приёмке</span><span class="state-arrow">→</span><span class="state">На приёмке</span><span class="state-arrow">→</span><span class="state system">Принята</span><span class="state-arrow">→</span><span class="state">Отгружена</span><span class="state-arrow">→</span><span class="state system">Доставлена / исполнена</span></div>
+    </div>
+    <div class="state-block">
+      <h3 class="state-title">Исключения единицы</h3>
+      <div class="state-flow"><span class="state issue">Отклонена поставщиком</span><span class="state issue">КП возвращено</span><span class="state issue">КП отклонено</span><span class="state issue">Рекламация</span><span class="state issue">На устранении</span><span class="state issue">Ожидается замена</span><span class="state issue">Принята с отклонениями</span></div>
+    </div>
+    <div class="state-block">
+      <h3 class="state-title">Расчёт общего статуса заказа</h3>
+      <p>Общий статус не вводится вручную. Система определяет его по актуальной версии договора и состоянию всех единиц: «КП частично согласовано», «Исполняется», «Частично готов», «Частично принят», «Частично доставлен», «Есть рекламации» или «Исполнен полностью».</p>
+      <p class="note">Приоритет отображения: незакрытая рекламация → просрочка → ожидаемое действие пользователя → текущий этап большинства единиц.</p>
+    </div>
+  </div>
+
+  <div id="roles-panel" role="tabpanel" aria-labelledby="roles-tab" hidden>
+    <div class="viz-grid role-grid">
+      <section class="card"><h3>Менеджер</h3><ul><li>создаёт запрос из каталога или свободно;</li><li>решает по каждой единице КП;</li><li>регистрирует договор и допсоглашения;</li><li>ведёт рекламации;</li><li>подтверждает доставку и закрывает заказ.</li></ul></section>
+      <section class="card"><h3>Поставщик</h3><ul><li>сам регистрируется и ведёт каталог;</li><li>указывает наличие на складе;</li><li>отвечает по каждой единице;</li><li>отправляет единое КП;</li><li>ведёт производство, готовность и отгрузку.</li></ul></section>
+      <section class="card"><h3>Технический приёмщик</h3><ul><li>получает задачи по готовым единицам;</li><li>проводит приёмку у поставщика;</li><li>при принятии вводит VIN и реквизиты;</li><li>при отказе создаёт рекламацию;</li><li>фиксирует повторную приёмку.</li></ul></section>
+      <section class="card"><h3>Система</h3><ul><li>проверяет допустимость действий;</li><li>создаёт версии и историю;</li><li>рассчитывает общий статус;</li><li>отправляет уведомления в кабинет и email;</li><li>блокирует закрытие при невыполненных обязательствах.</li></ul></section>
+    </div>
+    <h3>Ключевой форматно-логический контроль</h3>
+    <div class="table-responsive">
+      <table class="table table-sm control-table">
+        <thead><tr><th>Объект</th><th>Проверка</th><th>Реакция системы</th></tr></thead>
+        <tbody>
+          <tr><td>Регистрация</td><td>Email уникален; один пользователь поставщика; обязательные реквизиты компании</td><td>Не создавать дубликат; показывать конкретную ошибку</td></tr>
+          <tr><td>Запрос КП</td><td>Есть хотя бы одна предполагаемая единица; поставщик выбран; характеристики заполнены</td><td>Не отправлять неполный запрос</td></tr>
+          <tr><td>КП</td><td>Решение и условия заданы по каждой принятой единице; согласованные строки неизменяемы</td><td>Разрешать правку только возвращённых строк; создавать новую версию КП</td></tr>
+          <tr><td>Договор</td><td>Есть согласованные единицы; даты введены менеджером; условие доставки задано</td><td>Создавать неизменяемую версию заказа</td></tr>
+          <tr><td>Допсоглашение</td><td>Номер и дата уникальны в договоре; новое количество не меньше уже принятого</td><td>Создавать vN+1 и сохранять предыдущую версию</td></tr>
+          <tr><td>Готовность</td><td>Единица находится на складе; нет активной приёмки по этой единице</td><td>Создавать одну задачу приёмщику</td></tr>
+          <tr><td>Приёмка</td><td>Положительный результат требует VIN/номера и реквизитов; идентификатор уникален</td><td>Создавать имущество только после успешной проверки</td></tr>
+          <tr><td>Рекламация</td><td>Причина обязательна; приложена к конкретной попытке и единице</td><td>Не создавать имущество; уведомить менеджера и поставщика</td></tr>
+          <tr><td>Отгрузка</td><td>Разрешена только после положительной приёмки; одна запись на одну единицу</td><td>Блокировать отгрузку непринятого имущества</td></tr>
+          <tr><td>Доставка</td><td>Если предусмотрена договором, факт подтверждает менеджер</td><td>Не считать обязательство исполненным до подтверждения</td></tr>
+          <tr><td>Закрытие</td><td>Все единицы актуальной версии исполнены; нет открытых рекламаций</td><td>Разрешить менеджеру закрыть заказ</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
